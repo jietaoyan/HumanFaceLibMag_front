@@ -6,15 +6,15 @@
         <h3 class="title">登录</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userId">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
+          ref="userId"
+          v-model="loginForm.userId"
           placeholder="请输入姓名"
-          name="username"
+          name="userId"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -54,11 +54,12 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
+      // if (!validUsername(value)) {
+      //   callback(new Error('Please enter the correct user name'))
+      // } else {
+      //   callback()
+      // }
+      callback();
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
@@ -69,11 +70,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        userId: 'admin',
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userId: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
