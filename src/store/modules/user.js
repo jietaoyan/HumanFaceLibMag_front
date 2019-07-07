@@ -1,11 +1,10 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/tokenCookie'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  name: '',
-  avatar: '',
+  name: {},
   roles: []
 }
 
@@ -15,9 +14,6 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
@@ -31,9 +27,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ userId: userId.trim(), password: password }).then(response => {
         const { data } = response
+        const nameInfo = {}
+        nameInfo.id = data.id
+        nameInfo.name = data.name
+        nameInfo.userId = data.userId
+        nameInfo.isAdmin = data.isAdmin
         commit('SET_TOKEN', data.token)
-        commit('SET_NAME', data.name)
-        commit('SET_ROLES', (data.isAdmin === true || data.isAdmin === 'true') ? ['admin'] : ['editor'])
+        commit('SET_NAME', nameInfo)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -44,39 +44,18 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { roles, name, avatar } = data
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
+    const nameInfoTemp = state.name
+    commit('SET_ROLES', (nameInfoTemp.isAdmin === true || nameInfoTemp.isAdmin === 'true') ? ['admin'] : ['editor'])
   },
 
   // user logout
   logout({ commit, state }) {
+    commit('SET_TOKEN', '')
+    commit('SET_ROLES', [])
+    removeToken()
+    resetRouter()
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        removeToken()
-        resetRouter()
         resolve()
       }).catch(error => {
         reject(error)

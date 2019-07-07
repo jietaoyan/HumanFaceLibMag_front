@@ -63,7 +63,7 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码需不少于6位'))
       } else {
         callback()
       }
@@ -112,7 +112,7 @@ export default {
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
+          console.log('服务器繁忙，请稍后再试')
           return false
         }
       })

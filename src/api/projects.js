@@ -1,14 +1,11 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function getList() {
   return request({
-    url: '/admin/user/login',
-    method: 'post',
+    url: '/project/list',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     },
-    data
   })
 }
-
 
