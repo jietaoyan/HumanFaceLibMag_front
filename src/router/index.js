@@ -9,6 +9,7 @@ import Layout from '@/layout'
 /**
  * Note: sub-menu only appear when route children.length >= 1
  *
+ * 
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
@@ -46,12 +47,28 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '项目信息', icon: 'dashboard' }
-    }]
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '项目信息', icon: 'dashboard' }
+      },
+      {
+        path: 'prjUsers',
+        name: 'prjUsers',
+        hidden:true,
+        component: () => import('@/views/dashboard/prjUsers'),
+        meta: { title: '人员信息', icon: 'user' }
+      },
+      {
+        path: 'prjGroups',
+        name: 'prjGroups',
+        hidden:true,
+        component: () => import('@/views/dashboard/prjGroups'),
+        meta: { title: '分组信息', icon: 'user' }
+      }
+    ]
   },
 
   {
@@ -71,7 +88,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
+    path: '/setting',
     component: Layout,
     children: [
       {

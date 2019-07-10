@@ -11,4 +11,7 @@ export function login(data) {
   })
 }
 
+export function setNewPassword(id){
+  
 
+}
