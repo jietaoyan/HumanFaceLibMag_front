@@ -1,0 +1,17 @@
+table {
+  th {
+    height: 45px;
+
+    .cell {
+      text-align: center;
+    }
+  }
+
+  td {
+    height: 40px;
+  }
+}
+
+body .el-table th.gutter {
+  display: table-cell !important;
+}

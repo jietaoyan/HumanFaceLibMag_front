@@ -72,17 +72,17 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/groups',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: '示例', icon: 'example' },
+    redirect: '/groups/groupList',
+    name: 'groups',
+    meta: { title: '分组管理', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: '表格', icon: 'table' }
+        path: 'groupList',
+        name: 'groupList',
+        component: () => import('@/views/groups/index'),
+        meta: { title: '分组管理', icon: 'table' }
       }
     ]
   },
@@ -94,7 +94,7 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'Form',
-        component: () => import('@/views/form/index'),
+        component: () => import('@/views/setting/index'),
         meta: { title: '表单', icon: 'form' }
       }
     ]

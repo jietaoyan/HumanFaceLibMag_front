@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">项目列表</div>
+    <div class="dashboard-title">项目列表</div>
     <div class="dashboard-table">
       <el-table
         v-loading="listLoading"
@@ -21,19 +21,20 @@
         </el-table-column>
         <el-table-column label="数量" width="80" prop="count" align="center"></el-table-column>
         <el-table-column align="left" label="简介" prop="introduction" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column align="center" label="用户" width="90">
+        <el-table-column align="center" label="用户" width="110">
           <template slot-scope="scope">
             <el-button type="text" @click="openUsers(scope.row)">用户信息</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <prj-detail :projectDetail="project" :dialogVisible="detailShow"></prj-detail>
+    <prj-detail :projectDetail="project" :dialogVisible="detailShow" @getVisible="toggleDetailShow"></prj-detail>
   </div>
 </template>
 
 <script>
-import prjDetail from "./prjDetail";
+import prjDetail from "./prjDetail"
+import { getList } from '@/api/projects'
 
 export default {
   name: "Dashboard",
@@ -56,7 +57,6 @@ export default {
       this.listLoading = true;
       getList().then(response => {
         this.prjList = response.data;
-        debugger;
         this.listLoading = false;
       });
     },
@@ -71,6 +71,9 @@ export default {
           projectId: row.projectId
         }
       });
+    },
+    toggleDetailShow(data){
+      this.detailShow = data
     }
   },
   computed: {}
@@ -78,13 +81,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .dashboard {
   &-container {
     margin: 30px;
     position: relative;
     height: calc(100% - 120px);
   }
-  &-text {
+  &-title {
     font-size: 30px;
     line-height: 46px;
   }

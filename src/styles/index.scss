@@ -64,6 +64,44 @@ div:focus {
   padding: 20px;
 }
 
-table th{
-  text-align: center;
+.el-dialog {
+  .el-dialog__header {
+    padding: 15px 20px 0px;
+  }
+
+  .el-dialog__headerbtn {
+    top: 15px;
+  }
+
+  .el-dialog__body {
+    padding: 5px 20px 30px;
+  }
+
+  .el-row {
+    padding: 10px 5px;
+  }
+}
+
+.el-menu-item {
+  font-size: 17px;
+}
+
+.el-table {
+  table {
+    th {
+      height: 45px;
+
+      .cell {
+        text-align: center;
+      }
+    }
+
+    td {
+      height: 40px;
+    }
+  }
+}
+
+body .el-table th.gutter {
+  display: table-cell !important;
 }
