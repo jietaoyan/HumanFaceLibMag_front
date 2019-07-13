@@ -72,17 +72,17 @@ export const constantRoutes = [
   },
 
   {
-    path: '/groups',
+    path: '/face',
     component: Layout,
-    redirect: '/groups/groupList',
+    redirect: '/face/groupList',
     name: 'groups',
-    meta: { title: '分组管理', icon: 'example' },
+    meta: { title: '人脸信息管理', icon: 'example' },
     children: [
       {
         path: 'groupList',
         name: 'groupList',
-        component: () => import('@/views/groups/index'),
-        meta: { title: '分组管理', icon: 'table' }
+        component: () => import('@/views/face/index'),
+        meta: { title: '人脸管理', icon: 'table' }
       }
     ]
   },
@@ -90,12 +90,20 @@ export const constantRoutes = [
   {
     path: '/setting',
     component: Layout,
+    name: 'setting',
+    meta: { title: '综合管理', icon: 'user' },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/setting/index'),
-        meta: { title: '表单', icon: 'form' }
+        path: 'allUsers',
+        name: 'allUsers',
+        component: () => import('@/views/setting/allUsers'),
+        meta: { title: '所有用户', icon: 'form' }
+      },
+      {
+        path: 'me',
+        name: 'prjme',
+        component: () => import('@/views/setting/prjme'),
+        meta: { title: '所属项目', icon: 'form' }
       }
     ]
   }

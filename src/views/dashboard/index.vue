@@ -10,11 +10,11 @@
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="序号" width="95">
+        <el-table-column align="center" label="序号" width="70">
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
         <el-table-column label="项目编号" width="150" prop="projectId" align="center"></el-table-column>
-        <el-table-column label="项目名称" width="250" :show-overflow-tooltip="true">
+        <el-table-column label="项目名称" width="230" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <el-button type="text" @click="showPrjDetail(scope.row)">{{ scope.row.projectName }}</el-button>
           </template>
@@ -26,6 +26,11 @@
             <el-button type="text" @click="openUsers(scope.row)">用户信息</el-button>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="分组" width="110">
+          <template slot-scope="scope">
+            <el-button type="text" @click="openGroups(scope.row)">分组信息</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <prj-detail :projectDetail="project" :dialogVisible="detailShow" @getVisible="toggleDetailShow"></prj-detail>
@@ -33,8 +38,8 @@
 </template>
 
 <script>
-import prjDetail from "./prjDetail"
-import { getList } from '@/api/projects'
+import prjDetail from "./prjDetail";
+import { getList } from "@/api/projects";
 
 export default {
   name: "Dashboard",
@@ -72,8 +77,16 @@ export default {
         }
       });
     },
-    toggleDetailShow(data){
-      this.detailShow = data
+    openGroups(row) {
+      this.$router.push({
+        path: "/prjGroups",
+        query: {
+          projectId: row.projectId
+        }
+      });
+    },
+    toggleDetailShow(data) {
+      this.detailShow = data;
     }
   },
   computed: {}
@@ -81,7 +94,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .dashboard {
   &-container {
     margin: 30px;

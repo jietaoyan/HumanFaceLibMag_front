@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="详细信息" :visible.sync="visibled" width="40%" @close="returnVisible">
+    <el-dialog title="详细信息" :visible.sync="visibled" width="500px" @close="returnVisible">
       <hr />
       <el-row>
         <el-col :span="6">
@@ -51,9 +51,6 @@ export default {
       required: true,
       default: false
     }
-  },
-  mounted(){
-    // console.log(this.dialogVisible)
   },
   data() {
     return {

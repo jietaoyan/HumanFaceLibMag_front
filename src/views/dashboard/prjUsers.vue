@@ -1,6 +1,6 @@
 <template>
   <div class="users-container">
-    <div class="users-title">用户列表</div>
+    <div class="users-title"><span>用户列表</span></div>
     <div class="users-table">
       <el-table
         v-loading="listLoading"
@@ -10,48 +10,66 @@
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="序号" width="95">
+        <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
-        <el-table-column label="姓名" width="100" prop="username" align="center"></el-table-column>
-        <el-table-column label="编号" width="110" prop="userId" align="center"></el-table-column>
+        <el-table-column label="姓名" width="110" prop="username" align="center"></el-table-column>
+        <el-table-column label="编号" width="130" prop="userId" align="center"></el-table-column>
         <el-table-column label="年龄" width="90" prop="age" align="center"></el-table-column>
         <el-table-column label="性别" width="90" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.gender == 0 ? '男':'女'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="feats" width="90" prop="feats" align="center"></el-table-column>
-        <el-table-column label="featsize" width="90" prop="featsize" align="center"></el-table-column>
-        <el-table-column label="imageUrl" prop="imageUrl" align="center"></el-table-column>
-        <el-table-column label="userData" width="90" prop="userData" align="center"></el-table-column>
-        <el-table-column label="所属项目" width="250" :show-overflow-tooltip="true">
+        <!-- <el-table-column label="feats" width="90" prop="feats" align="center"></el-table-column>
+        <el-table-column label="featsize" width="90" prop="featsize" align="center"></el-table-column>-->
+        <el-table-column label="头像" prop="imageUrl" width="120" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="showUserPhoto(scope.row)">查看头像</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="所属项目" width="280" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span v-if="!scope.row.project">{{projectId}}</span>
-            <el-button type="text" @click="showPrjDetail(scope.row)" v-else>{{ scope.row.project.projectName }}</el-button>
+            <el-button
+              type="text"
+              @click="showPrjDetail(scope.row.project)"
+              v-else
+            >{{ scope.row.project.projectName }}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageInfo.pageIndex + 1"
-      :page-sizes="[20, 50, 100]"
-      :page-size="pageInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="totalUsers">
-    </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageInfo.pageIndex + 1"
+        :page-sizes="[20, 50, 100]"
+        :page-size="pageInfo.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalUsers"
+      ></el-pagination>
     </div>
+    <user-phote
+      :imageUrl="photoUrl"
+      :photoName="photeName"
+      :dialogVisible="photoShow"
+      @getVisible="toggleDetailShow"
+    ></user-phote>
   </div>
 </template>
 <script>
 import { getUsersByProjectId } from "@/api/projects";
+import userPhote from "./userPhoto";
+
 export default {
   name: "prjUsers",
+  components: {
+    userPhote
+  },
   created() {
     this.projectId = this.$route.query.projectId;
     this.fetchData();
-    console.log(this.projectId);
   },
   data() {
     return {
@@ -61,7 +79,10 @@ export default {
         pageSize: 20,
         pageIndex: 0
       },
-      totalUsers:0,
+      totalUsers: 0,
+      photoUrl: "",
+      photoShow: false,
+      photeName: "",
       listLoading: true
     };
   },
@@ -76,23 +97,29 @@ export default {
         "&pageSize=" +
         this.pageInfo.pageSize;
       getUsersByProjectId(params).then(response => {
-        console.log(response)
+        console.log(response);
         this.userList = response.data.data;
-        this.totalUsers = response.data.totalCount
+        this.totalUsers = response.data.totalCount;
         this.listLoading = false;
       });
     },
     //分页方法
-    handleSizeChange(val){
-      this.pageInfo.pageSize = val
-      this.fetchData()
+    handleSizeChange(val) {
+      this.pageInfo.pageSize = val;
+      this.fetchData();
     },
-    handleCurrentChange(val){
-      this.pageInfo.pageIndex = val - 1
-      this.fetchData()
+    handleCurrentChange(val) {
+      this.pageInfo.pageIndex = val - 1;
+      this.fetchData();
     },
-    showPrjDetail(prjid){
-
+    showPrjDetail(project) {},
+    showUserPhoto(row) {
+      this.photoUrl = row.imageUrl;
+      this.photeName = row.username;
+      this.photoShow = true;
+    },
+    toggleDetailShow(visiable) {
+      this.photoShow = visiable;
     }
   }
 };
