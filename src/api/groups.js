@@ -4,10 +4,8 @@ import request from '@/utils/request'
 export function getGroupsList(param) {
   return request({
     url: '/project/group/list?' + param,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
+
   })
 }
 
@@ -15,10 +13,6 @@ export function getGroupsList(param) {
 export function deleteGroup(param) {
   return request({
     url: '/project/group/delete?' + param,
-    method: 'delete',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'delete'
   })
 }
-

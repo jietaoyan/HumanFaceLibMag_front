@@ -2,7 +2,7 @@
   <div>
     <el-dialog title="添加管理员" :visible.sync="visibled" width="500px" @close="returnVisible">
       <hr />
-      <el-form :model="form" ref="adminFormRef" :rules="loginRules" class="demo-ruleForm">
+      <el-form :model="admin" ref="adminFormRef" :rules="loginRules" class="demo-ruleForm">
         <el-form-item label="用户名" prop="userId" :label-width="formLabelWidth">
           <el-input
             v-model="admin.userId"
@@ -59,7 +59,7 @@
 </template>
 <script>
 import { addAdmin } from "@/api/user";
-import { showMessage, confirmMessage } from "@/utils/index";
+import { showMessage } from "@/utils/index";
 import { isAccount } from "@/utils/validate";
 
 export default {
@@ -112,7 +112,7 @@ export default {
         name: "",
         checkPass: ""
       },
-      visible: false,
+      visibled: false,
       formLabelWidth: "120px",
       loading: false,
       loginRules: {

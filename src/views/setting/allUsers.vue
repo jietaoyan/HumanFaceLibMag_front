@@ -16,14 +16,14 @@
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
-        <el-table-column label="姓名" width="100" prop="name" align="center"></el-table-column>
-        <el-table-column label="编号" width="110" prop="userId" align="center"></el-table-column>
-        <el-table-column label="是否管理员" width="120" prop="isAdmin" align="center">
+        <el-table-column label="姓名" width="140" prop="name" align="center"></el-table-column>
+        <el-table-column label="编号" width="200" prop="userId" align="center"></el-table-column>
+        <el-table-column label="是否管理员" width="150" prop="isAdmin" align="center">
           <template slot-scope="scope">
             <span>{{(/^true$/i).test(scope.row.isAdmin) ? '管理员':'普通用户'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="调整" width="90" align="center">
+        <el-table-column label="调整" width="170" align="center">
           <template slot-scope="scope">
             <div v-if="(/^true$/i).test(scope.row.isAdmin)"></div>
             <div v-else>
@@ -31,7 +31,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="密码重置" width="90" align="center">
+        <el-table-column label="密码重置" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="resetPassword(scope.row)">重置密码</el-button>
           </template>
@@ -54,6 +54,7 @@
 </template>
 <script>
 import { getUsersFromAdmin, setUserAdmin, resetPwdByAdmin } from "@/api/user";
+import { showMessage } from "@/utils/index";
 import adminForm from "./adminForm";
 
 export default {
@@ -79,9 +80,15 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true;
-      getUsersFromAdmin().then(response => {
-        console.log(response);
-        this.userList = response.data;
+      let param =
+        "pageIndex=" +
+        this.pageInfo.pageIndex +
+        "&pageSize=" +
+        this.pageInfo.pageSize;
+      getUsersFromAdmin(param).then(response => {
+        // console.log(response);
+        this.userList = response.data.data;
+        this.totalUsers = response.data.totalCount;
         this.listLoading = false;
       });
     },
@@ -99,57 +106,61 @@ export default {
     //将用户提升至管理员
     setUser2Admin(row) {
       if (/^true$/i.test(row.isAdmin)) {
-        this.showMessage("用户“" + row.name + "已经是管理员”", "warning");
+        showMessage(this, "用户“" + row.name + "已经是管理员”", "warning");
         return;
       }
-      this.confirmMessage("是否将用户“" + row.name + "”调整为管理员?", () => {
-        this.listLoading = true;
-        let param = "userId=" + row.id;
-        setUserAdmin(param).then(resp => {
-          this.showMessage("调整为管理员成功");
-          this.listLoading = false;
+      let that = this;
+      that
+        .$confirm("是否将用户“" + row.name + "”调整为管理员?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          center: true
+        })
+        .then(() => {
+          // debugger
+          that.listLoading = true;
+          let param = "id=" + row.id;
+          setUserAdmin(param).then(resp => {
+            that.showMessage(that,"调整为管理员成功");
+            that.fetchData();
+          });
+        })
+        .catch(() => {
+          showMessage(that, "服务器繁忙，请稍后再试?", "error");
+          that.listLoading = false;
         });
-      });
     },
     //重置密码
     resetPassword(row) {
-      this.confirmMessage(
-        "是否将用户“" + row.name + "”的密码重置为手机后六位?",
-        () => {
-          this.listLoading = true;
-          let param = "userId=" + row.id;
-          resetPwdByAdmin(param).then(resp => {
-            this.showMessage("重置密码成功");
-            this.listLoading = false;
-          });
+      let that  = this
+      that.$confirm(
+        "是否将用户“" + row.name + "”的密码重置为“000000”?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          center: true
         }
-      );
+      )
+        .then(() => {
+          // debugger
+          that.listLoading = true;
+          let param = "id=" + row.id;
+          resetPwdByAdmin(param).then(resp => {
+            showMessage(that,"重置密码成功");
+            that.listLoading = false;
+          });
+        })
+        .catch(() => {
+          showMessage(that,"服务器繁忙，请稍后再试", "error");
+          that.listLoading = false;
+        });
     },
     toggleDetailShow(visible) {
       this.dialogVisible = visible;
     },
-    //顶端提示消息统一方法
-    showMessage(msg, type = success) {
-      this.$message({
-        message: msg,
-        type: type,
-        center: true,
-        showClose: true
-      });
-    },
-    //确认信息统一方法
-    confirmMessage(msg, done, errorMsg = "服务器繁忙，请稍后再试") {
-      this.$confirm(msg, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true
-      })
-        .then(done())
-        .catch(() => {
-          this.showMessage(errorMsg, "error");
-        });
-    }
   }
 };
 </script>

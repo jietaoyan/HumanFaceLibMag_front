@@ -34,7 +34,7 @@
       :projectId="projectId"
       :groupId="groupIdSelect"
       :dialogVisible="groupUserShow"
-      @getVisible="toggleDetailShow"
+      @getVisible="toggleUserDetailShow"
     ></group-users>
   </div>
 </template>
@@ -85,9 +85,12 @@ export default {
       deleteGroup(param).then(reap => {});
     },
     //弹出框隐藏
-    toggleDetailShow(visiable) {
-      this.photoShow = visiable;
-    }
+    toggleUserDetailShow(visiable) {
+      this.groupUserShow = visiable;
+    },
+    toggleFormDetailShow(visiable) {
+      this.groupFormShow = visiable;
+    },
   }
 };
 </script>

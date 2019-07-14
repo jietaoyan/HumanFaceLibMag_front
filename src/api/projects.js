@@ -4,21 +4,23 @@ import request from '@/utils/request'
 export function getList() {
   return request({
     url: '/project/list',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
   })
 }
 
 //项目用户信息,params为"projectId=id&pageIndex=pageIndex&pageSize=size"
-export function getUsersByProjectId(params){
+export function getUsersByProjectId(params) {
   return request({
     url: '/face/list-user-page?' + params,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
+  })
+}
+
+//项目用户信息,params为"projectId=id&userId=id"
+export function deleteUserFromProject(params) {
+  return request({
+    url: '/face/delete-user?' + params,
+    method: 'delete'
   })
 }
 
@@ -26,9 +28,6 @@ export function getUsersByProjectId(params){
 export function prjOfMe() {
   return request({
     url: '/project/me',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
   })
 }

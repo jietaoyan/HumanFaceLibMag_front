@@ -16,10 +16,10 @@
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
-        <el-table-column label="姓名" width="130" prop="username" align="center"></el-table-column>
+        <el-table-column label="姓名" width="120" prop="username" align="center"></el-table-column>
         <el-table-column label="编号" width="160" prop="userId" align="center"></el-table-column>
-        <el-table-column label="年龄" width="100" prop="age" align="center"></el-table-column>
-        <el-table-column label="性别" width="100" align="center">
+        <el-table-column label="年龄" width="90" prop="age" align="center"></el-table-column>
+        <el-table-column label="性别" width="90" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.gender == 0 ? '男':'女'}}</span>
           </template>
@@ -32,6 +32,11 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="deleteUser(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -52,13 +57,16 @@
   </div>
 </template>
 <script>
-import { getUsersByProjectId } from "@/api/projects";
+import { getUsersByProjectId, deleteUserFromProject } from "@/api/projects";
+import { showMessage } from "@/utils/index";
 import userPhote from "./userPhoto";
+import userAdd from "./prjUserAdd";
 
 export default {
   name: "prjUsers",
   components: {
-    userPhote
+    userPhote,
+    userAdd
   },
   created() {
     this.projectId = this.$route.query.projectId;
@@ -107,10 +115,31 @@ export default {
       this.pageInfo.pageIndex = val - 1;
       this.fetchData();
     },
+    //显示用户头像
     showUserPhoto(row) {
       this.photoUrl = row.imageUrl;
       this.photeName = row.username;
       this.photoShow = true;
+    },
+    //删除用户
+    deleteUser(row) {
+      let param = "projectId=" + this.projectId + "&userId=" + row.userId;
+      let that = this;
+      that.$confirm("确认删除用户“" + row.username + "”？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          center: true
+        })
+        .then(() => {
+          deleteUserFromProject(param).then(resp => {
+            showMessage(that, "删除用户“" + row.username + "”成功");
+            that.fetchData();
+          });
+        })
+        .catch(() => {
+          showMessage(that, errorMsg, "error");
+        });
     },
     toggleDetailShow(visiable) {
       this.photoShow = visiable;
@@ -128,7 +157,7 @@ export default {
   &-title {
     font-size: 30px;
     line-height: 46px;
-    title-small{
+    title-small {
       font-size: 16px;
     }
   }

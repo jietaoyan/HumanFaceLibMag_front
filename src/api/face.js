@@ -4,10 +4,7 @@ import request from '@/utils/request'
 export function getFaceVersion() {
   return request({
     url: '/face/version',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
   })
 }
 
@@ -15,20 +12,14 @@ export function getFaceVersion() {
 export function getFaceAvaDays() {
   return request({
     url: '/face/ava-days',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
   })
 }
 
 export function getFeatureSize() {
   return request({
     url: '/face/feature-size',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    },
+    method: 'get'
   })
 }
 
