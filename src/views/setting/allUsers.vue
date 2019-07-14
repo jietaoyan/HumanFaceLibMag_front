@@ -48,37 +48,19 @@
       ></el-pagination>
     </div>
     <div>
-      <el-dialog title="添加管理员" :visible.sync="visibled" width="300px" @close="returnVisible">
-        <hr />
-        <el-form :model="form">
-          <el-form-item label="用户名" :label-width="formLabelWidth">
-            <el-input v-model="admin.userId" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" :label-width="formLabelWidth">
-            <el-input v-model="admin.password" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="中文名" :label-width="formLabelWidth">
-            <el-input v-model="admin.name" autocomplete="off"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="adminUpload">确 定</el-button>
-        </div>
-      </el-dialog>
+      <admin-form :dialogVisible="dialogVisible" @getVisible="toggleDetailShow"></admin-form>
     </div>
   </div>
 </template>
 <script>
-import {
-  getUsersFromAdmin,
-  setUserAdmin,
-  resetPwdByAdmin,
-  addAdmin
-} from "@/api/user";
+import { getUsersFromAdmin, setUserAdmin, resetPwdByAdmin } from "@/api/user";
+import adminForm from "./adminForm";
 
 export default {
   name: "allUsers",
+  components: {
+    adminForm
+  },
   created() {
     this.fetchData();
   },
@@ -91,7 +73,6 @@ export default {
         pageIndex: 0
       },
       totalUsers: 0,
-      
       dialogVisible: false
     };
   },
@@ -105,9 +86,7 @@ export default {
       });
     },
     //添加管理员
-    adminUpload(){
-
-    },
+    adminUpload() {},
     //分页方法
     handleSizeChange(val) {
       this.pageInfo.pageSize = val;
@@ -125,7 +104,7 @@ export default {
       }
       this.confirmMessage("是否将用户“" + row.name + "”调整为管理员?", () => {
         this.listLoading = true;
-        let param = "userId="+row.id
+        let param = "userId=" + row.id;
         setUserAdmin(param).then(resp => {
           this.showMessage("调整为管理员成功");
           this.listLoading = false;
@@ -138,13 +117,16 @@ export default {
         "是否将用户“" + row.name + "”的密码重置为手机后六位?",
         () => {
           this.listLoading = true;
-          let param = "userId="+row.id
+          let param = "userId=" + row.id;
           resetPwdByAdmin(param).then(resp => {
             this.showMessage("重置密码成功");
             this.listLoading = false;
           });
         }
       );
+    },
+    toggleDetailShow(visible) {
+      this.dialogVisible = visible;
     },
     //顶端提示消息统一方法
     showMessage(msg, type = success) {

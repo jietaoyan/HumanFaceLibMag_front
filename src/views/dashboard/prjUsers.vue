@@ -1,6 +1,9 @@
 <template>
   <div class="users-container">
-    <div class="users-title"><span>用户列表</span></div>
+    <div class="users-title">
+      <span>项目用户列表</span>
+      <span class="title-small">{{'(' + projectName + ')'}}</span>
+    </div>
     <div class="users-table">
       <el-table
         v-loading="listLoading"
@@ -13,32 +16,22 @@
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
-        <el-table-column label="姓名" width="110" prop="username" align="center"></el-table-column>
-        <el-table-column label="编号" width="130" prop="userId" align="center"></el-table-column>
-        <el-table-column label="年龄" width="90" prop="age" align="center"></el-table-column>
-        <el-table-column label="性别" width="90" align="center">
+        <el-table-column label="姓名" width="130" prop="username" align="center"></el-table-column>
+        <el-table-column label="编号" width="160" prop="userId" align="center"></el-table-column>
+        <el-table-column label="年龄" width="100" prop="age" align="center"></el-table-column>
+        <el-table-column label="性别" width="100" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.gender == 0 ? '男':'女'}}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column label="feats" width="90" prop="feats" align="center"></el-table-column>
         <el-table-column label="featsize" width="90" prop="featsize" align="center"></el-table-column>-->
-        <el-table-column label="头像" prop="imageUrl" width="120" align="center">
+        <el-table-column label="头像" prop="imageUrl" width="130" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="showUserPhoto(scope.row)">查看头像</el-button>
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="所属项目" width="280" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="!scope.row.project">{{projectId}}</span>
-            <el-button
-              type="text"
-              @click="showPrjDetail(scope.row.project)"
-              v-else
-            >{{ scope.row.project.projectName }}</el-button>
-          </template>
-        </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -69,11 +62,13 @@ export default {
   },
   created() {
     this.projectId = this.$route.query.projectId;
+    this.projectName = this.$route.query.projectName;
     this.fetchData();
   },
   data() {
     return {
       projectId: "",
+      projectName: "",
       userList: [],
       pageInfo: {
         pageSize: 20,
@@ -97,7 +92,7 @@ export default {
         "&pageSize=" +
         this.pageInfo.pageSize;
       getUsersByProjectId(params).then(response => {
-        console.log(response);
+        // console.log(response);
         this.userList = response.data.data;
         this.totalUsers = response.data.totalCount;
         this.listLoading = false;
@@ -112,7 +107,6 @@ export default {
       this.pageInfo.pageIndex = val - 1;
       this.fetchData();
     },
-    showPrjDetail(project) {},
     showUserPhoto(row) {
       this.photoUrl = row.imageUrl;
       this.photeName = row.username;
@@ -134,6 +128,9 @@ export default {
   &-title {
     font-size: 30px;
     line-height: 46px;
+    title-small{
+      font-size: 16px;
+    }
   }
   &-table {
     position: relative;

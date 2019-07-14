@@ -74,15 +74,20 @@ export const constantRoutes = [
   {
     path: '/face',
     component: Layout,
-    redirect: '/face/groupList',
-    name: 'groups',
+    name: 'face',
     meta: { title: '人脸信息管理', icon: 'example' },
     children: [
       {
-        path: 'groupList',
-        name: 'groupList',
-        component: () => import('@/views/face/index'),
-        meta: { title: '人脸管理', icon: 'table' }
+        path: 'version',
+        name: 'version',
+        component: () => import('@/views/face/fVersion'),
+        meta: { title: '版本信息', icon: 'table' }
+      },
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/face/fVersion'),
+        meta: { title: '版本信息', icon: 'table' }
       }
     ]
   },

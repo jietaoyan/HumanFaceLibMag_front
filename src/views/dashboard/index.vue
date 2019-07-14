@@ -73,7 +73,8 @@ export default {
       this.$router.push({
         path: "/prjUsers",
         query: {
-          projectId: row.projectId
+          projectId: row.projectId,
+          projectName: row.projectName
         }
       });
     },
@@ -81,7 +82,8 @@ export default {
       this.$router.push({
         path: "/prjGroups",
         query: {
-          projectId: row.projectId
+          projectId: row.projectId,
+          projectName: row.projectName
         }
       });
     },

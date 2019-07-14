@@ -54,18 +54,18 @@ export default {
   },
   data() {
     return {
-      visibled:false
+      visibled: false
     };
   },
-  methods:{
-    returnVisible(){
-      this.$emit('getVisible',this.visibled)
+  methods: {
+    returnVisible() {
+      this.$emit("getVisible", this.visibled);
     }
   },
-  computed:{
-    getVisible(){
-      this.visibled = this.dialogVisible
-      return this.dialogVisible
+  computed: {
+    getVisible() {
+      this.visibled = this.dialogVisible;
+      return this.dialogVisible;
     }
   }
 };

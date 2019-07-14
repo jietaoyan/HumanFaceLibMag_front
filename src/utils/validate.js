@@ -1,6 +1,7 @@
-/**
- * Created by PanJiaChen on 16/11/18.
- */
+//账号验证字母数字下划线
+export function isAccount(account){
+  return /^[a-zA-Z0-9_]{1,}$/.test(account)
+}
 
 /**
  * @param {string} path
@@ -10,11 +11,3 @@ export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }
 
-/**
- * @param {string} str
- * @returns {Boolean}
- */
-export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
-}

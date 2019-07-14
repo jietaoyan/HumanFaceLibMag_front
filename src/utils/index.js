@@ -1,3 +1,28 @@
+
+//顶端提示消息统一方法
+export function showMessage(that,msg, type = success) {
+  that.$message({
+    message: msg,
+    type: type,
+    center: true,
+    showClose: true
+  });
+}
+
+//确认信息统一方法
+export function confirmMessage(that,msg, done, errorMsg = "服务器繁忙，请稍后再试") {
+  that.$confirm(msg, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+    center: true
+  })
+    .then(done())
+    .catch(() => {
+      showMessage(that,errorMsg, "error");
+    });
+}
+
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
