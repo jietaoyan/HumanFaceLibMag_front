@@ -2,7 +2,7 @@
   <div class="users-container">
     <div class="users-title">
       <span>用户列表</span>
-      <el-button type="primary" icon="el-icon-user-solid" @click="dialogVisible=true">添加管理员</el-button>
+        <el-button type="primary" icon="el-icon-user-solid" @click="dialogVisible=true" class="title-button">添加管理员</el-button>
     </div>
     <div class="users-table">
       <el-table
@@ -48,7 +48,7 @@
       ></el-pagination>
     </div>
     <div>
-      <admin-form :dialogVisible="dialogVisible" @getVisible="toggleDetailShow"></admin-form>
+      <admin-form :dialogVisible="dialogVisible" @getVisible="toggleDetailShow(arguments)"></admin-form>
     </div>
   </div>
 </template>
@@ -122,8 +122,10 @@ export default {
           that.listLoading = true;
           let param = "id=" + row.id;
           setUserAdmin(param).then(resp => {
-            that.showMessage(that,"调整为管理员成功");
-            that.fetchData();
+            showMessage(that,"调整为管理员成功");
+            // that.fetchData();
+            row.isAdmin = true;
+            that.listLoading = false;
           });
         })
         .catch(() => {
@@ -158,8 +160,11 @@ export default {
           that.listLoading = false;
         });
     },
-    toggleDetailShow(visible) {
-      this.dialogVisible = visible;
+    toggleDetailShow(data) {
+      this.dialogVisible = data[0];
+      if(data[1]){
+        this.fetchData();
+      }
     },
   }
 };
@@ -179,5 +184,8 @@ export default {
     position: relative;
     height: calc(100% - 120px);
   }
+}
+.title-button{
+  margin-bottom: 3px;
 }
 </style>

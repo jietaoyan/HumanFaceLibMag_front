@@ -43,7 +43,7 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="form-button">
           <el-button
             type="primary"
             @click.native.prevent="adminUpload('adminFormRef')"
@@ -90,7 +90,7 @@ export default {
         callback(new Error("密码需由字母数字下划线等组成"));
       } else {
         if (this.admin.checkPass !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
+          this.$refs.adminFormRef.validateField("checkPass");
         }
         callback();
       }
@@ -113,8 +113,9 @@ export default {
         checkPass: ""
       },
       visibled: false,
-      formLabelWidth: "120px",
+      formLabelWidth: "110px",
       loading: false,
+      addSuccess: false,
       loginRules: {
         userId: [
           { required: true, message: "请输入用户名", trigger: "blur" },
@@ -130,7 +131,7 @@ export default {
           { required: true, message: "请输入姓名", trigger: "blur" },
           { max: 20, message: "姓名最多20位字符" },
           {
-            pattern: /^[a-zA-Z]*[\u4E00-\u9FA5]*$/,
+            pattern: /^[a-zA-Z0-9\u4E00-\u9FA5]*$/,
             message: "姓名请输入中文或英文"
           }
         ]
@@ -139,23 +140,24 @@ export default {
   },
   methods: {
     returnVisible() {
-      this.$emit("getVisible", this.visibled);
+      this.$emit("getVisible", this.visibled,this,addSuccess);
     },
     //提交表单
     adminUpload(formName) {
+      let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-            let adminer = {}
-            adminer.userId = this.admin.userId
-            adminer.password = this.admin.password
-            adminer.name = this.admin.name
-            this.loading = true
-            addAdmin(adminer).then(resp=>{
-
-                this.loading = false
-                showMessage(this,"创建成功")
-                this.visible = false
-            })
+          let adminer = {};
+          adminer.userId = that.admin.userId;
+          adminer.password = that.admin.password;
+          adminer.name = that.admin.name;
+          that.loading = true;
+          addAdmin(adminer).then(resp => {
+            that.loading = false;
+            showMessage(this, "创建成功");
+            that.addSuccess = true;
+            that.visibled = false;
+          });
         } else {
           return false;
         }
@@ -175,4 +177,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.form-button {
+  text-align: center;
+}
 </style>

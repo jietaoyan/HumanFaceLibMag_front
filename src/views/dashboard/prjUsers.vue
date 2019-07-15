@@ -21,7 +21,7 @@
         <el-table-column label="年龄" width="90" prop="age" align="center"></el-table-column>
         <el-table-column label="性别" width="90" align="center">
           <template slot-scope="scope">
-            <span>{{scope.row.gender == 0 ? '男':'女'}}</span>
+            <span>{{scope.row.gender | genderFilter}}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column label="feats" width="90" prop="feats" align="center"></el-table-column>
@@ -72,6 +72,17 @@ export default {
     this.projectId = this.$route.query.projectId;
     this.projectName = this.$route.query.projectName;
     this.fetchData();
+  },
+  filters:{
+    genderFilter:value=>{
+      if(value==1){
+        return '男'
+      }else if(value==2){
+        return '女'
+      }else{
+        return '暂无'
+      }
+    }
   },
   data() {
     return {

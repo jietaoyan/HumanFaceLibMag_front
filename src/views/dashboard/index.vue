@@ -19,7 +19,7 @@
             <el-button type="text" @click="showPrjDetail(scope.row)">{{ scope.row.projectName }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="数量" width="80" prop="count" align="center"></el-table-column>
+        <el-table-column label="用户数量" width="80" prop="count" align="center"></el-table-column>
         <el-table-column align="left" label="简介" prop="introduction" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column align="center" label="用户" width="110">
           <template slot-scope="scope">
