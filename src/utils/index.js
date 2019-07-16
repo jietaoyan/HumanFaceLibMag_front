@@ -8,6 +8,17 @@ export function showMessage(that, msg, type = 'success') {
   });
 }
 
+//性别
+export function genderJudge(value) {
+  if (value == 0) {
+    return '男'
+  } else if (value == 1) {
+    return '女'
+  } else {
+    return '暂无'
+  }
+}
+
 //确认信息统一方法,有问题，暂不用
 export function confirmMessage(that, msg, done, errorMsg = "服务器繁忙，请稍后再试") {
   that.$confirm(msg, "提示", {

@@ -22,7 +22,7 @@
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
-        <el-table-column label="分组名称" width="250" prop="name" align="left"></el-table-column>
+        <el-table-column label="分组名称" prop="name" align="left"></el-table-column>
         <el-table-column label="分组用户" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="showGroupUsers(scope.row)">用户列表</el-button>
@@ -38,6 +38,7 @@
     <group-users
       :projectId="projectId"
       :groupId="groupIdSelect"
+      :groupName="groupIdSelectName"
       :dialogVisible="groupUserShow"
       @getVisible="toggleUserDetailShow"
     ></group-users>
@@ -71,6 +72,7 @@ export default {
       projectName: "",
       groupList: [],
       groupIdSelect: "1",
+      groupIdSelectName:'1',
       listLoading: true,
       groupUserShow: false,
       groupFormShow: false
@@ -89,6 +91,7 @@ export default {
     //打开分组用户列表
     showGroupUsers(row) {
       this.groupIdSelect = ''+row.id;
+      this.groupIdSelectName = row.name
       this.groupUserShow = true;
     },
     //删除分组
@@ -143,6 +146,9 @@ export default {
   &-table {
     position: relative;
     height: calc(100% - 120px);
+    .el-table{
+      width: 600px
+    }
   }
 }
 .title-button {

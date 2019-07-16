@@ -1,10 +1,18 @@
 <template>
-  <div class="users-container">
-    <div class="users-title">
-      <span>项目用户列表</span>
-      <span class="title-small">{{'(' + projectName + ')'}}</span>
-    </div>
-    <div class="users-table">
+  <div>
+    <el-dialog
+      title="分组用户列表"
+      :visible.sync="visibled"
+      width="900px"
+      max-height="800px"
+      @close="returnVisible"
+    >
+      <hr />
+      <el-row>
+        <el-col :span="24">
+          <span>{{projectName}}</span>
+        </el-col>
+      </el-row>
       <el-table
         v-loading="listLoading"
         :data="userList"
@@ -24,17 +32,15 @@
             <span>{{scope.row.gender | genderFilter}}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="feats" width="90" prop="feats" align="center"></el-table-column>
-        <el-table-column label="featsize" width="90" prop="featsize" align="center"></el-table-column>-->
-        <el-table-column label="头像" prop="imageUrl" width="130" align="center">
+        <!-- <el-table-column label="头像" prop="imageUrl" width="130" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="showUserPhoto(scope.row)">查看头像</el-button>
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="deleteUser(scope.row)">删除</el-button>
+            <el-button type="text" @click="insertIntoGroup(scope.row)">添加</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,35 +53,25 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalUsers"
       ></el-pagination>
-    </div>
-    <user-phote
-      :imageUrl="photoUrl"
-      :photoName="photeName"
-      :dialogVisible="photoShow"
-      @getVisible="toggleDetailShow"
-    ></user-phote>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { getUsersByProjectId, deleteUserFromProject } from "@/api/projects";
-import { showMessage, genderJudge } from "@/utils/index";
-import userPhote from "./userPhoto";
-import userAdd from "./prjUserAdd";
+import { showMessage } from "@/utils/index";
 
 export default {
-  name: "prjUsers",
-  components: {
-    userPhote,
-    userAdd
-  },
-  created() {
-    this.projectId = this.$route.query.projectId;
-    this.projectName = this.$route.query.projectName;
-    this.fetchData();
-  },
+  name: "prjGroupUserSelect",
+
   filters: {
-    genderFilter(value) {
-      return genderJudge(value);
+    genderFilter: value => {
+      if (value == 0) {
+        return "男";
+      } else if (value == 1) {
+        return "女";
+      } else {
+        return "暂无";
+      }
     }
   },
   data() {
@@ -120,14 +116,9 @@ export default {
       this.pageInfo.pageIndex = val - 1;
       this.fetchData();
     },
-    //显示用户头像
-    showUserPhoto(row) {
-      this.photoUrl = row.imageUrl;
-      this.photeName = row.username;
-      this.photoShow = true;
-    },
-    //删除用户
-    deleteUser(row) {
+
+    //添加用户导分组
+    insertIntoGroup(row) {
       let param = "projectId=" + this.projectId + "&userId=" + row.userId;
       let that = this;
       that
@@ -154,22 +145,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.users {
-  &-container {
-    margin: 30px;
-    position: relative;
-    height: calc(100% - 120px);
-  }
-  &-title {
-    font-size: 30px;
-    line-height: 46px;
-    title-small {
-      font-size: 16px;
-    }
-  }
-  &-table {
-    position: relative;
-    height: calc(100% - 120px);
-  }
-}
 </style>

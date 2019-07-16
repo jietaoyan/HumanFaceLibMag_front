@@ -2,7 +2,9 @@
   <div>
     <el-dialog title="用户头像" :visible.sync="visibled" width="300px" @close="returnVisible">
         <hr />
-        <img :src="imageUrl" :alt="photoName">
+        <div style="text-align:center;">
+          <img :src="imageUrl" :alt="photoName">
+        </div>
     </el-dialog>
     <div style="display:none">{{getVisible}}</div>
   </div>

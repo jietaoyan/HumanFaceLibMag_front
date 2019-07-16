@@ -75,19 +75,19 @@ export const constantRoutes = [
     path: '/face',
     component: Layout,
     name: 'face',
-    meta: { title: '人脸信息管理', icon: 'example' },
+    meta: { title: '人脸信息管理', icon: 'user' },
     children: [
       {
         path: 'version',
         name: 'version',
         component: () => import('@/views/face/fVersion'),
-        meta: { title: '版本信息', icon: 'table' }
+        meta: { title: '版本信息', icon: 'form' }
       },
       {
-        path: 'index',
-        name: 'index',
-        component: () => import('@/views/face/fVersion'),
-        meta: { title: '版本信息', icon: 'table' }
+        path: 'detect',
+        name: 'detect',
+        component: () => import('@/views/face/detect'),
+        meta: { title: '人脸检测', icon: 'face' }
       }
     ]
   },
@@ -96,19 +96,19 @@ export const constantRoutes = [
     path: '/setting',
     component: Layout,
     name: 'setting',
-    meta: { title: '综合管理', icon: 'user' },
+    meta: { title: '综合管理', icon: 'example' },
     children: [
       {
         path: 'allUsers',
         name: 'allUsers',
         component: () => import('@/views/setting/allUsers'),
-        meta: { title: '所有用户', icon: 'form' }
+        meta: { title: '所有用户', icon: 'users' }
       },
       {
         path: 'me',
         name: 'prjme',
         component: () => import('@/views/setting/prjme'),
-        meta: { title: '所属项目', icon: 'form' }
+        meta: { title: '所属项目', icon: 'link' }
       }
     ]
   }

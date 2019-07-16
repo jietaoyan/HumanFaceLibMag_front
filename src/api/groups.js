@@ -35,3 +35,14 @@ export function getGroupUsers(param) {
     method: 'get'
   })
 }
+
+export function deleteUserInGroup(data){
+  return request({
+    url: '/project/group/remove-users',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data
+  })
+}
