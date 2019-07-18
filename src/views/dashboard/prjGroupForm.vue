@@ -68,6 +68,7 @@ export default {
   },
   methods: {
     returnVisible() {
+      this.group.name = '';
       this.$emit("getVisible", this.visibled,this.addSuccess);
     },
     //提交表单

@@ -7,6 +7,14 @@ export function getList() {
     method: 'get'
   })
 }
+//项目列表，带分页pageIndex=pageIndex&pageSize=size
+export function getListPage(param) {
+  return request({
+    url: '/project/list-page?'+param,
+    method: 'get'
+  })
+}
+
 
 //项目用户信息,params为"projectId=id&pageIndex=pageIndex&pageSize=size"
 export function getUsersByProjectId(params) {

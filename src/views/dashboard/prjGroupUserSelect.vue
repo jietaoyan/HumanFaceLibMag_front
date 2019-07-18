@@ -1,10 +1,9 @@
 <template>
   <div>
     <el-dialog
-      title="分组用户列表"
+      title="项目用户列表"
       :visible.sync="visibled"
       width="900px"
-      max-height="800px"
       @close="returnVisible"
     >
       <hr />
@@ -17,7 +16,7 @@
         v-loading="listLoading"
         :data="userList"
         element-loading-text="加载中……"
-        border
+        :height="tableHeight"
         fit
         highlight-current-row
       >
@@ -34,15 +33,19 @@
         </el-table-column>
         <!-- <el-table-column label="头像" prop="imageUrl" width="130" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="showUserPhoto(scope.row)">查看头像</el-button>
+            <el-popover placement="right" width="265" trigger="hover">
+              <el-image style="width: 250px;" :src="scope.row.imageUrl" fit="contain"></el-image>
+              <el-button type="text" slot="reference">查看头像</el-button>
+            </el-popover>
           </template>
         </el-table-column>-->
-        <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="insertIntoGroup(scope.row)">添加</el-button>
+            <span v-if="scope.row.isAdd"></span>
+            <el-button v-else type="text" @click="insertIntoGroup(scope.row)">选入</el-button>
           </template>
         </el-table-column>
+        <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -54,39 +57,54 @@
         :total="totalUsers"
       ></el-pagination>
     </el-dialog>
+    <div style="display:none">{{getVisible}}</div>
   </div>
 </template>
 <script>
-import { getUsersByProjectId, deleteUserFromProject } from "@/api/projects";
-import { showMessage } from "@/utils/index";
+import { getUsersByProjectId } from "@/api/projects";
+import { addUserInGroup } from "@/api/groups";
+import { showMessage, genderJudge } from "@/utils/index";
 
 export default {
   name: "prjGroupUserSelect",
-
+  props: {
+    projectId: {
+      type: String,
+      required: true
+    },
+    projectName: {
+      type: String,
+      required: true
+    },
+    groupUserIds: {
+      type: Array,
+      required: true
+    },
+    groupId: {
+      type: Number,
+      required: true
+    },
+    dialogVisible: {
+      type: Boolean,
+      required: true,
+      default: false
+    }
+  },
   filters: {
-    genderFilter: value => {
-      if (value == 0) {
-        return "男";
-      } else if (value == 1) {
-        return "女";
-      } else {
-        return "暂无";
-      }
+    genderFilter(value) {
+      return genderJudge(value);
     }
   },
   data() {
     return {
-      projectId: "",
-      projectName: "",
+      visibled: false,
       userList: [],
       pageInfo: {
         pageSize: 20,
         pageIndex: 0
       },
       totalUsers: 0,
-      photoUrl: "",
-      photoShow: false,
-      photeName: "",
+      tableHeight: window.innerHeight - 400,
       listLoading: true
     };
   },
@@ -104,6 +122,16 @@ export default {
         // console.log(response);
         this.userList = response.data.data;
         this.totalUsers = response.data.totalCount;
+        this.userList.forEach(user => {
+          //增加一个属性判断是否已经添加到分组
+          user.isAdd = false;
+          if (
+            this.groupUserIds.length > 0 &&
+            this.groupUserIds.includes(user.id)
+          ) {
+            user.isAdd = true;
+          }
+        });
         this.listLoading = false;
       });
     },
@@ -117,29 +145,32 @@ export default {
       this.fetchData();
     },
 
-    //添加用户导分组
+    //添加用户到分组
     insertIntoGroup(row) {
-      let param = "projectId=" + this.projectId + "&userId=" + row.userId;
-      let that = this;
-      that
-        .$confirm("确认删除用户“" + row.username + "”？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-          center: true
-        })
-        .then(() => {
-          deleteUserFromProject(param).then(resp => {
-            showMessage(that, "删除用户“" + row.username + "”成功");
-            that.fetchData();
-          });
-        })
+      row.isAdd = true;
+      let data = {};
+      data.groupId = this.groupId;
+      data.projectId = this.projectId;
+      data.userIds = [];
+      data.userIds.push(row.userId);
+      addUserInGroup(data)
+        .then(resp => {})
         .catch(() => {
-          showMessage(that, errorMsg, "error");
+          showMessage(that, errorMsg, "添加到分组出错");
         });
     },
-    toggleDetailShow(visiable) {
-      this.photoShow = visiable;
+    returnVisible() {
+      this.visibled = false;
+      this.$emit("getVisible", this.visibled);
+    }
+  },
+  computed: {
+    getVisible() {
+      this.visibled = this.dialogVisible;
+      if (this.visibled) {
+        this.fetchData();
+      }
+      return this.dialogVisible;
     }
   }
 };

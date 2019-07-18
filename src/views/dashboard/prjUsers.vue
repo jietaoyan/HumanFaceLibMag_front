@@ -2,14 +2,20 @@
   <div class="users-container">
     <div class="users-title">
       <span>项目用户列表</span>
-      <span class="title-small">{{'(' + projectName + ')'}}</span>
+      <span class="title-small">{{'(' + projectName + ')'}}&nbsp;&nbsp;</span>
+      <el-button
+        type="primary"
+        icon="el-icon-s-custom"
+        @click="groupFormShow=true"
+        class="title-button"
+      >添加用户</el-button>
     </div>
     <div class="users-table">
       <el-table
         v-loading="listLoading"
         :data="userList"
+        :height="tableHeight"
         element-loading-text="加载中……"
-        border
         fit
         highlight-current-row
       >
@@ -28,15 +34,18 @@
         <el-table-column label="featsize" width="90" prop="featsize" align="center"></el-table-column>-->
         <el-table-column label="头像" prop="imageUrl" width="130" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="showUserPhoto(scope.row)">查看头像</el-button>
+            <el-popover placement="right" width="265" trigger="hover">
+              <el-image style="width: 240px;" :src="scope.row.imageUrl" fit="contain"></el-image>
+              <el-button type="text" slot="reference">查看头像</el-button>
+            </el-popover>
           </template>
         </el-table-column>
-        <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="deleteUser(scope.row)">删除</el-button>
           </template>
         </el-table-column>
+        <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -48,24 +57,17 @@
         :total="totalUsers"
       ></el-pagination>
     </div>
-    <user-phote
-      :imageUrl="photoUrl"
-      :photoName="photeName"
-      :dialogVisible="photoShow"
-      @getVisible="toggleDetailShow"
-    ></user-phote>
+    <!-- <use-add></use-add> -->
   </div>
 </template>
 <script>
 import { getUsersByProjectId, deleteUserFromProject } from "@/api/projects";
 import { showMessage, genderJudge } from "@/utils/index";
-import userPhote from "./userPhoto";
 import userAdd from "./prjUserAdd";
 
 export default {
   name: "prjUsers",
   components: {
-    userPhote,
     userAdd
   },
   created() {
@@ -88,13 +90,12 @@ export default {
         pageIndex: 0
       },
       totalUsers: 0,
-      photoUrl: "",
-      photoShow: false,
-      photeName: "",
+      tableHeight: window.innerHeight - 150,
       listLoading: true
     };
   },
   methods: {
+    //加载数据
     fetchData() {
       this.listLoading = true;
       let params =
@@ -120,12 +121,7 @@ export default {
       this.pageInfo.pageIndex = val - 1;
       this.fetchData();
     },
-    //显示用户头像
-    showUserPhoto(row) {
-      this.photoUrl = row.imageUrl;
-      this.photeName = row.username;
-      this.photoShow = true;
-    },
+
     //删除用户
     deleteUser(row) {
       let param = "projectId=" + this.projectId + "&userId=" + row.userId;
@@ -146,9 +142,6 @@ export default {
         .catch(() => {
           showMessage(that, errorMsg, "error");
         });
-    },
-    toggleDetailShow(visiable) {
-      this.photoShow = visiable;
     }
   }
 };
@@ -156,20 +149,14 @@ export default {
 <style lang="scss" scoped>
 .users {
   &-container {
-    margin: 30px;
-    position: relative;
-    height: calc(100% - 120px);
+    margin: 10px 30px;
   }
   &-title {
-    font-size: 30px;
+    font-size: 24px;
     line-height: 46px;
-    title-small {
-      font-size: 16px;
-    }
   }
   &-table {
-    position: relative;
-    height: calc(100% - 120px);
+    width: 100%;
   }
 }
 </style>

@@ -3,20 +3,20 @@
     <el-dialog title="添加管理员" :visible.sync="visibled" width="500px" @close="returnVisible">
       <hr />
       <el-form :model="admin" ref="adminFormRef" :rules="loginRules" class="demo-ruleForm">
-        <el-form-item label="用户名" prop="userId" :label-width="formLabelWidth">
+        <el-form-item label="用户名" prop="formUserId" :label-width="formLabelWidth">
           <el-input
-            v-model="admin.userId"
-            ref="userId"
+            v-model="admin.formUserId"
+            ref="formUserId"
             type="text"
             tabindex="1"
             placeholder="由字母\数字\下划线组成"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password" :label-width="formLabelWidth">
+        <el-form-item label="密码" prop="formPassword" :label-width="formLabelWidth">
           <el-input
-            v-model="admin.password"
-            ref="password"
+            v-model="admin.formPassword"
+            ref="formPassword"
             type="password"
             tabindex="2"
             placeholder="请输入密码"
@@ -98,7 +98,7 @@ export default {
     const checkPassValid = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.admin.password) {
+      } else if (value !== this.admin.formPassword) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -107,8 +107,8 @@ export default {
     const nameValid = (rule, value, callback) => {};
     return {
       admin: {
-        userId: "",
-        password: "",
+        formUserId: "",
+        formPassword: "",
         name: "",
         checkPass: ""
       },
@@ -117,11 +117,11 @@ export default {
       loading: false,
       addSuccess: false,
       loginRules: {
-        userId: [
+        formUserId: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { validator: userIdValid, trigger: "blur" }
         ],
-        password: [
+        formPassword: [
           { required: true, trigger: "blur", validator: passwordValid }
         ],
         checkPass: [
@@ -148,8 +148,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let adminer = {};
-          adminer.userId = that.admin.userId;
-          adminer.password = that.admin.password;
+          adminer.userId = that.admin.formUserId;
+          adminer.password = that.admin.formPassword;
           adminer.name = that.admin.name;
           that.loading = true;
           addAdmin(adminer).then(resp => {

@@ -5,7 +5,14 @@ export function getGroupsList(param) {
   return request({
     url: '/project/group/list?' + param,
     method: 'get'
+  })
+}
 
+//获取项目分组带分页,param为projectId=projectid&pageIndex=pageIndex&pageSize=size
+export function getGroupsListPage(param) {
+  return request({
+    url: '/project/group/list-page?' + param,
+    method: 'get'
   })
 }
 
@@ -36,6 +43,22 @@ export function getGroupUsers(param) {
   })
 }
 
+//获取分组用户带分页,projectId=id&groupId=id&pageIndex=pageIndex&pageSize=size
+export function getGroupUsersPage(param) {
+  return request({
+    url: '/project/group/user-list-page?' + param,
+    method: 'get'
+  })
+}
+
+//删除分组内用户
+// {
+//   "groupId": 0,
+//   "projectId": "string",
+//   "userIds": [
+//     "string"
+//   ]
+// }
 export function deleteUserInGroup(data){
   return request({
     url: '/project/group/remove-users',
@@ -46,3 +69,22 @@ export function deleteUserInGroup(data){
     data
   })
 }
+//添加用户到分组
+// {
+//   "groupId": 0,
+//   "projectId": "string",
+//   "userIds": [
+//     "string"
+//   ]
+// }
+export function addUserInGroup(data){
+  return request({
+    url: '/project/group/insert-users',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data
+  })
+}
+

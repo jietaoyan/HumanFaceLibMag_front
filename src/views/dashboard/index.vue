@@ -6,7 +6,7 @@
         v-loading="listLoading"
         :data="prjList"
         element-loading-text="加载中……"
-        border
+        :height="tableHeight"
         fit
         highlight-current-row
       >
@@ -20,7 +20,6 @@
           </template>
         </el-table-column>
         <el-table-column label="用户数量" width="80" prop="count" align="center"></el-table-column>
-        <el-table-column align="left" label="简介" prop="introduction" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column align="center" label="用户" width="110">
           <template slot-scope="scope">
             <el-button type="text" @click="openUsers(scope.row)">用户信息</el-button>
@@ -31,7 +30,17 @@
             <el-button type="text" @click="openGroups(scope.row)">分组信息</el-button>
           </template>
         </el-table-column>
+        <el-table-column align="left" label="简介" prop="introduction" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageInfo.pageIndex + 1"
+        :page-sizes="[20, 50, 100]"
+        :page-size="pageInfo.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalPrjs"
+      ></el-pagination>
     </div>
     <prj-detail :projectDetail="project" :dialogVisible="detailShow" @getVisible="toggleDetailShow"></prj-detail>
   </div>
@@ -39,18 +48,24 @@
 
 <script>
 import prjDetail from "./prjDetail";
-import { getList } from "@/api/projects";
+import { getList,getListPage } from "@/api/projects";
 
 export default {
   name: "Dashboard",
   components: {
-    "prj-detail": prjDetail
+    prjDetail
   },
   data() {
     return {
       prjList: [],
       project: {},
+      pageInfo: {
+        pageSize: 20,
+        pageIndex: 0
+      },
+      totalPrjs: 0,
       detailShow: false,
+      tableHeight: window.innerHeight - 150,
       listLoading: true
     };
   },
@@ -60,15 +75,32 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true;
-      getList().then(response => {
-        this.prjList = response.data;
+      let params =
+        "&pageIndex=" +
+        this.pageInfo.pageIndex +
+        "&pageSize=" +
+        this.pageInfo.pageSize;
+      getListPage().then(response => {
+        this.prjList = response.data.data;
+        this.totalPrjs = response.data.totalCount;
         this.listLoading = false;
       });
     },
+    //分页方法
+    handleSizeChange(val) {
+      this.pageInfo.pageSize = val;
+      this.fetchData();
+    },
+    handleCurrentChange(val) {
+      this.pageInfo.pageIndex = val - 1;
+      this.fetchData();
+    },
+    //打开项目明细
     showPrjDetail(row) {
       this.project = row;
       this.detailShow = true;
     },
+    //打开项目用户列表
     openUsers(row) {
       this.$router.push({
         path: "/prjUsers",
@@ -78,6 +110,7 @@ export default {
         }
       });
     },
+    //打开分组
     openGroups(row) {
       this.$router.push({
         path: "/prjGroups",
@@ -98,17 +131,15 @@ export default {
 <style lang="scss" scoped>
 .dashboard {
   &-container {
-    margin: 30px;
-    position: relative;
-    height: calc(100% - 120px);
+    margin: 10px 30px;
   }
   &-title {
-    font-size: 30px;
+    font-size: 24px;
     line-height: 46px;
   }
   &-table {
-    position: relative;
-    height: calc(100% - 120px);
+    width: 100%;
   }
 }
+
 </style>

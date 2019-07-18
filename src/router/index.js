@@ -67,6 +67,13 @@ export const constantRoutes = [
         hidden:true,
         component: () => import('@/views/dashboard/prjGroups'),
         meta: { title: '分组信息', icon: 'user' }
+      },
+      {
+        path: 'prjGroupUsers',
+        name: 'prjGroupUsers',
+        hidden:true,
+        component: () => import('@/views/dashboard/prjGroupUsers'),
+        meta: { title: '分组人员信息', icon: 'user' }
       }
     ]
   },

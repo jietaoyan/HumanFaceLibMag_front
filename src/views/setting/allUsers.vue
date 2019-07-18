@@ -1,15 +1,20 @@
 <template>
   <div class="users-container">
     <div class="users-title">
-      <span>用户列表</span>
-        <el-button type="primary" icon="el-icon-user-solid" @click="dialogVisible=true" class="title-button">添加管理员</el-button>
+      <span>用户列表&nbsp;&nbsp;</span>
+      <el-button
+        type="primary"
+        icon="el-icon-user-solid"
+        @click="dialogVisible=true"
+        class="title-button"
+      >添加管理员</el-button>
     </div>
     <div class="users-table">
       <el-table
         v-loading="listLoading"
         :data="userList"
         element-loading-text="加载中……"
-        border
+        :height="tableHeight"
         fit
         highlight-current-row
       >
@@ -74,6 +79,7 @@ export default {
         pageIndex: 0
       },
       totalUsers: 0,
+      tableHeight: window.innerHeight - 150,
       dialogVisible: false
     };
   },
@@ -122,7 +128,7 @@ export default {
           that.listLoading = true;
           let param = "id=" + row.id;
           setUserAdmin(param).then(resp => {
-            showMessage(that,"调整为管理员成功");
+            showMessage(that, "调整为管理员成功");
             // that.fetchData();
             row.isAdmin = true;
             that.listLoading = false;
@@ -135,57 +141,53 @@ export default {
     },
     //重置密码
     resetPassword(row) {
-      let that  = this
-      that.$confirm(
-        "是否将用户“" + row.name + "”的密码重置为“000000”?",
-        "提示",
-        {
+      let that = this;
+      that
+        .$confirm("是否将用户“" + row.name + "”的密码重置为“000000”?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
           center: true
-        }
-      )
+        })
         .then(() => {
           // debugger
           that.listLoading = true;
           let param = "id=" + row.id;
           resetPwdByAdmin(param).then(resp => {
-            showMessage(that,"重置密码成功");
+            showMessage(that, "重置密码成功");
             that.listLoading = false;
           });
         })
         .catch(() => {
-          showMessage(that,"服务器繁忙，请稍后再试", "error");
+          showMessage(that, "服务器繁忙，请稍后再试", "error");
           that.listLoading = false;
         });
     },
     toggleDetailShow(data) {
       this.dialogVisible = data[0];
-      if(data[1]){
+      if (data[1]) {
         this.fetchData();
       }
-    },
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
 .users {
   &-container {
-    margin: 30px;
-    position: relative;
-    height: calc(100% - 120px);
+    margin: 10px 30px;
   }
   &-title {
-    font-size: 30px;
+    font-size: 24px;
     line-height: 46px;
   }
   &-table {
-    position: relative;
-    height: calc(100% - 120px);
+    .el-table {
+      width: 880px;
+    }
   }
 }
-.title-button{
+.title-button {
   margin-bottom: 3px;
 }
 </style>

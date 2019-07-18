@@ -2,7 +2,7 @@
   <div class="groups-container">
     <div class="groups-title">
       <span>项目分组列表</span>
-      <span class="title-small">{{'(' + projectName + ')'}}</span>
+      <span class="title-small">{{'(' + projectName + ')'}}&nbsp;&nbsp;</span>
       <el-button
         type="primary"
         icon="el-icon-s-order"
@@ -15,7 +15,7 @@
         v-loading="listLoading"
         :data="groupList"
         element-loading-text="加载中……"
-        border
+        :height="tableHeight"
         fit
         highlight-current-row
       >
@@ -34,14 +34,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageInfo.pageIndex + 1"
+        :page-sizes="[20, 50, 100]"
+        :page-size="pageInfo.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalGroups"
+      ></el-pagination>
     </div>
-    <group-users
-      :projectId="projectId"
-      :groupId="groupIdSelect"
-      :groupName="groupIdSelectName"
-      :dialogVisible="groupUserShow"
-      @getVisible="toggleUserDetailShow"
-    ></group-users>
     <group-form
       :projectId="projectId"
       :dialogVisible="groupFormShow"
@@ -50,15 +52,13 @@
   </div>
 </template>
 <script>
-import { getGroupsList, deleteGroup } from "@/api/groups";
+import { getGroupsListPage, deleteGroup } from "@/api/groups";
 import { showMessage } from "@/utils/index";
-import groupUsers from "./prjGroupUsers";
 import groupForm from "./prjGroupForm";
 
 export default {
   name: "prjUsers",
   components: {
-    groupUsers,
     groupForm
   },
   created() {
@@ -69,30 +69,54 @@ export default {
   data() {
     return {
       projectId: "1",
-      projectName: "",
+      projectName: "1",
       groupList: [],
-      groupIdSelect: "1",
-      groupIdSelectName:'1',
-      listLoading: true,
-      groupUserShow: false,
-      groupFormShow: false
+      pageInfo: {
+        pageSize: 20,
+        pageIndex: 0
+      },
+      totalGroups: 0,
+      tableHeight: window.innerHeight - 150,
+      groupFormShow: false,
+      listLoading: true
     };
   },
   methods: {
     fetchData() {
       this.listLoading = true;
-      let params = "projectId=" + this.projectId;
-      getGroupsList(params).then(response => {
-        this.groupList = response.data;
+      let params =
+        "projectId=" +
+        this.projectId +
+        "&pageIndex=" +
+        this.pageInfo.pageIndex +
+        "&pageSize=" +
+        this.pageInfo.pageSize;
+      getGroupsListPage(params).then(response => {
+        this.groupList = response.data.data;
+        this.totalGroups = response.data.totalCount;
         this.listLoading = false;
       });
     },
-
+    //分页方法
+    handleSizeChange(val) {
+      this.pageInfo.pageSize = val;
+      this.fetchData();
+    },
+    handleCurrentChange(val) {
+      this.pageInfo.pageIndex = val - 1;
+      this.fetchData();
+    },
     //打开分组用户列表
     showGroupUsers(row) {
-      this.groupIdSelect = ''+row.id;
-      this.groupIdSelectName = row.name
-      this.groupUserShow = true;
+      this.$router.push({
+        path: "/prjGroupUsers",
+        query: {
+          projectId: this.projectId,
+          projectName: this.projectName,
+          groupId: row.id,
+          groupName: row.name
+        }
+      });
     },
     //删除分组
     deleteGroup(row) {
@@ -115,10 +139,6 @@ export default {
           showMessage(that, errorMsg, "error");
         });
     },
-    //弹出框隐藏
-    toggleUserDetailShow(visiable) {
-      this.groupUserShow = visiable;
-    },
     //添加成功了分组则刷新页面加载
     toggleFormDetailShow(data) {
       this.groupFormShow = data[0];
@@ -132,26 +152,20 @@ export default {
 <style lang="scss" scoped>
 .groups {
   &-container {
-    margin: 30px;
-    position: relative;
-    height: calc(100% - 120px);
+    margin: 10px 30px;
   }
+
   &-title {
-    font-size: 30px;
+    font-size: 24px;
     line-height: 46px;
-    title-small {
-      font-size: 16px;
-    }
   }
+
   &-table {
     position: relative;
-    height: calc(100% - 120px);
-    .el-table{
-      width: 600px
+
+    .el-table {
+      width: 600px;
     }
   }
-}
-.title-button {
-  margin-bottom: 3px;
 }
 </style>

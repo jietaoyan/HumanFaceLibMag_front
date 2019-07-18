@@ -62,10 +62,10 @@ export default {
 <style lang="scss" scoped>
 .prjme {
   &-container {
-    margin: 30px;
+    margin: 10px 30px;
   }
   &-title {
-    font-size: 30px;
+    font-size: 24px;
     line-height: 46px;
   }
   &-table {
