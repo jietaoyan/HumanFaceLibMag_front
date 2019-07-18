@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-dialog title="添加管理员" :visible.sync="visibled" width="500px" @close="returnVisible">
+    <el-dialog title="添加用户" :visible.sync="visibled" width="500px" @close="returnVisible">
       <hr />
       <el-form :model="admin" ref="adminFormRef" :rules="loginRules" class="demo-ruleForm">
-        <el-form-item label="用户名" prop="formUserId" :label-width="formLabelWidth">
+        <el-form-item label="用户ID" prop="formUserId" :label-width="formLabelWidth">
           <el-input
             v-model="admin.formUserId"
             ref="formUserId"
@@ -13,33 +13,25 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="formPassword" :label-width="formLabelWidth">
-          <el-input
-            v-model="admin.formPassword"
-            ref="formPassword"
-            type="password"
-            tabindex="2"
-            placeholder="请输入密码"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass" :label-width="formLabelWidth">
-          <el-input
-            v-model="admin.checkPass"
-            type="password"
-            ref="checkPass"
-            tabindex="3"
-            placeholder="请再次输入密码"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="姓名" prop="name" :label-width="formLabelWidth">
+
+        <el-form-item label="用户姓名" prop="name" :label-width="formLabelWidth">
           <el-input
             v-model="admin.name"
             ref="name"
             type="text"
-            tabindex="4"
+            tabindex="2"
             placeholder="可输入中文名"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="userData" :label-width="formLabelWidth">
+          <el-input
+            v-model="admin.userData"
+            type="textarea"
+            ref="userData"
+            :rows="2"
+            placeholder="请输入备注"
+            tabindex="4"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -65,6 +57,10 @@ import { isAccount } from "@/utils/validate";
 export default {
   name: "adminForm",
   props: {
+    projectId: {
+      type: String,
+      required: true
+    },
     dialogVisible: {
       type: Boolean,
       required: true,
@@ -81,36 +77,12 @@ export default {
         callback();
       }
     };
-    const passwordValid = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else if (value.length < 6 || value.length > 50) {
-        callback(new Error("密码需要6~50位字符"));
-      } else if (!/^(\w){6,50}$/.test(value)) {
-        callback(new Error("密码需由字母数字下划线等组成"));
-      } else {
-        if (this.admin.checkPass !== "") {
-          this.$refs.adminFormRef.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-    const checkPassValid = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.admin.formPassword) {
-        callback(new Error("两次输入密码不一致!"));
-      } else {
-        callback();
-      }
-    };
     const nameValid = (rule, value, callback) => {};
     return {
       admin: {
         formUserId: "",
-        formPassword: "",
         name: "",
-        checkPass: ""
+        userData: ""
       },
       visibled: false,
       formLabelWidth: "110px",
@@ -120,12 +92,6 @@ export default {
         formUserId: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { validator: userIdValid, trigger: "blur" }
-        ],
-        formPassword: [
-          { required: true, trigger: "blur", validator: passwordValid }
-        ],
-        checkPass: [
-          { required: true, trigger: "blur", validator: checkPassValid }
         ],
         name: [
           { required: true, message: "请输入姓名", trigger: "blur" },
@@ -140,7 +106,7 @@ export default {
   },
   methods: {
     returnVisible() {
-      this.$emit("getVisible", this.visibled,this,addSuccess);
+      this.$emit("getVisible", this.visibled, this.addSuccess);
     },
     //提交表单
     adminUpload(formName) {
@@ -149,15 +115,14 @@ export default {
         if (valid) {
           let adminer = {};
           adminer.userId = that.admin.formUserId;
-          adminer.password = that.admin.formPassword;
           adminer.name = that.admin.name;
           that.loading = true;
-          addAdmin(adminer).then(resp => {
-            that.loading = false;
-            showMessage(this, "创建成功");
-            that.addSuccess = true;
-            that.visibled = false;
-          });
+
+          //this.$refs.upload.submit();
+          that.loading = false;
+          showMessage(this, "创建成功");
+          that.addSuccess = true;
+          that.visibled = false;
         } else {
           return false;
         }

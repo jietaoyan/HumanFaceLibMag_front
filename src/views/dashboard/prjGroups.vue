@@ -109,7 +109,7 @@ export default {
     //打开分组用户列表
     showGroupUsers(row) {
       this.$router.push({
-        path: "/prjGroupUsers",
+        path: "/prjGroups/groupUsers",
         query: {
           projectId: this.projectId,
           projectName: this.projectName,
@@ -139,7 +139,7 @@ export default {
           showMessage(that, errorMsg, "error");
         });
     },
-    //添加成功了分组则刷新页面加载
+    //添加分组成功了分组则刷新页面加载
     toggleFormDetailShow(data) {
       this.groupFormShow = data[0];
       if (data[1]) {

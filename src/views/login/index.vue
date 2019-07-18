@@ -83,8 +83,10 @@ export default {
     };
     return {
       loginForm: {
-        userId: "chen_j",
-        password: "ecidi123"
+        userId: "",
+        password: ""
+        //userId: "chen_j",
+        //password: "ecidi123"
       },
       loginRules: {
         userId: [

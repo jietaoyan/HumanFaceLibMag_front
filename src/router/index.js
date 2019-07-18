@@ -66,7 +66,14 @@ export const constantRoutes = [
         name: 'prjGroups',
         hidden:true,
         component: () => import('@/views/dashboard/prjGroups'),
-        meta: { title: '分组信息', icon: 'user' }
+        meta: { title: '分组信息', icon: 'user' },
+        children:[
+          {
+            path: 'groupUsers',
+            name: 'groupUsers',
+            redirect: '/prjGroupUsers',
+          }
+        ]
       },
       {
         path: 'prjGroupUsers',

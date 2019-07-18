@@ -98,8 +98,6 @@ export default {
         this.listLoading = false;
       });
     },
-    //添加管理员
-    adminUpload() {},
     //分页方法
     handleSizeChange(val) {
       this.pageInfo.pageSize = val;

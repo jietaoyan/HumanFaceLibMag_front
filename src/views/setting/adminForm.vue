@@ -140,7 +140,7 @@ export default {
   },
   methods: {
     returnVisible() {
-      this.$emit("getVisible", this.visibled,this,addSuccess);
+      this.$emit("getVisible", this.visibled,this.addSuccess);
     },
     //提交表单
     adminUpload(formName) {

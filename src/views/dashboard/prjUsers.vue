@@ -6,7 +6,7 @@
       <el-button
         type="primary"
         icon="el-icon-s-custom"
-        @click="groupFormShow=true"
+        @click="dialogVisible=true"
         class="title-button"
       >添加用户</el-button>
     </div>
@@ -57,7 +57,8 @@
         :total="totalUsers"
       ></el-pagination>
     </div>
-    <!-- <use-add></use-add> -->
+    <user-add :projectId="projectId" :dialogVisible="dialogVisible" @getVisible="toggleDetailShow(arguments)"></user-add>
+   
   </div>
 </template>
 <script>
@@ -82,8 +83,8 @@ export default {
   },
   data() {
     return {
-      projectId: "",
-      projectName: "",
+      projectId: "1",
+      projectName: "1",
       userList: [],
       pageInfo: {
         pageSize: 20,
@@ -91,7 +92,8 @@ export default {
       },
       totalUsers: 0,
       tableHeight: window.innerHeight - 150,
-      listLoading: true
+      listLoading: true,
+      dialogVisible:false
     };
   },
   methods: {
@@ -142,6 +144,13 @@ export default {
         .catch(() => {
           showMessage(that, errorMsg, "error");
         });
+    },
+    //添加用户成功了分组则刷新页面加载
+    toggleDetailShow(data){
+      this.dialogVisible = data[0];
+      if(data[1]){
+        this.fetchData();
+      }
     }
   }
 };

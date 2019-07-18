@@ -35,7 +35,7 @@
         <el-table-column label="头像" prop="imageUrl" width="130" align="center">
           <template slot-scope="scope">
             <el-popover placement="right" width="265" trigger="hover">
-              <el-image style="width: 250px;" :src="scope.row.imageUrl" fit="contain"></el-image>
+              <el-image style="width: 240px;" :src="scope.row.imageUrl" fit="contain"></el-image>
               <el-button type="text" slot="reference">查看头像</el-button>
             </el-popover>
           </template>
@@ -127,7 +127,7 @@ export default {
         this.userList = resp.data.data;
         this.totalUsers = resp.data.totalCount;
         this.listLoading = false;
-        //Todo,waiting
+        //Todo,waiting groupusers id list
         this.userList.forEach(user => {
           this.groupUserIds.push(user.id);
         });
