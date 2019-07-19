@@ -59,15 +59,16 @@
 
 <script>
 import { isAccount } from "@/utils/validate";
+import { showMessage } from "@/utils/index";
 
 export default {
   name: "Login",
   data() {
     const validateUsername = (rule, value, callback) => {
-     if (value.length > 40) {
+      if (value.length > 40) {
         callback(new Error("用户名过长"));
-      }else if(!isAccount(value)){
-        callback(new Error("账号请由字母、数组或下划线组成"))
+      } else if (!isAccount(value)) {
+        callback(new Error("请输入正确的账号"));
       } else {
         callback();
       }
@@ -75,9 +76,9 @@ export default {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error("密码需不少于6位"));
-      } else if(value.length >50){
+      } else if (value.length > 50) {
         callback(new Error("密码过长"));
-      }else {
+      } else {
         callback();
       }
     };
@@ -121,6 +122,7 @@ export default {
       });
     },
     handleLogin() {
+      let that = this;
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
@@ -134,7 +136,7 @@ export default {
               this.loading = false;
             });
         } else {
-          console.log("服务器繁忙，请稍后再试");
+          showMessage(that, "请检查输入内容后再试","error");
           return false;
         }
       });

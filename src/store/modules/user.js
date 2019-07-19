@@ -32,6 +32,7 @@ const actions = {
         nameInfo.name = data.name
         nameInfo.userId = data.userId
         nameInfo.isAdmin = data.isAdmin
+        sessionStorage.setItem('mvtlabsUserId',data.id);
         commit('SET_TOKEN', data.token)
         commit('SET_NAME', nameInfo)
         setToken(data.token)

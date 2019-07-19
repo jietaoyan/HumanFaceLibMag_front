@@ -1,21 +1,40 @@
 <template>
   <div class="detect-container">
-    <div class="detect-title">人脸数据特征检测</div>
+    <div class="detect-title">比对两张人脸特征值</div>
     <div class="detect-table">
       <div>
-        <el-upload
-          :action="ftpUrl"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload"
-          class="avatar-uploader"
-          accept="image/png, image/jpeg"
-        >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <el-row style="height:180px;">
+          <el-col :span="5">
+            <el-upload
+              :action="ftpUrl"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+              class="avatar-uploader"
+              accept="image/png, image/jpeg"
+              :auto-upload="false"
+            >
+              <img v-if="imageUrl1" :src="imageUrl1" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-col>
+          <el-col :span="12">
+            <el-upload
+              :action="ftpUrl"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+              class="avatar-uploader"
+              accept="image/png, image/jpeg"
+              :auto-upload="false"
+            >
+              <img v-if="imageUrl2" :src="imageUrl2" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-col>
+        </el-row>
       </div>
-      <div v-show="message" class="messagt-area">
+      <div v-show="message">
         <div v-if="message=='执行成功'">
           <p>
             <span>年龄&nbsp;&nbsp;</span>
@@ -42,7 +61,7 @@ import { showMessage, genderJudge } from "@/utils/index";
 import defaultSettings from '@/settings';
 
 export default {
-  name: "faceDetect",
+  name: "faceCompare",
   data() {
     return {
       ftpUrl: defaultSettings.fileUrl + "face/detect",
@@ -63,7 +82,8 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      // console.log(file);
+      console.log(file);
+      this.imageUrl = URL.createObjectURL(file.raw);
       this.message = file.response.message;
       this.info.age = file.response.data.age;
       this.info.gender = file.response.data.gender;
@@ -71,7 +91,6 @@ export default {
       this.info.feats = file.response.data.feats;
     },
     beforeAvatarUpload(file) {
-      URL.revokeObjectURL(this.imageUrl);
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 512 / 512 < 1;
       if (!isJPG) {
@@ -80,7 +99,6 @@ export default {
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 300k!");
       }
-      this.imageUrl = URL.createObjectURL(file);
       return isJPG && isLt2M;
     }
   }
@@ -97,9 +115,6 @@ export default {
   }
   &-table {
     width: 100%;
-    .messagt-area{
-      margin-top: 10px;
-    }
   }
 }
 .avatar-uploader .el-upload {

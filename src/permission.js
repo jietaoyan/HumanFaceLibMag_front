@@ -19,7 +19,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  const hasGetUserInfo = store.getters.name.id
+  const hasGetUserInfo = store.getters.name.id || sessionStorage.getItem('mvtlabsUserId');
 
   if (hasToken && hasGetUserInfo) {
     if (to.path === '/login') {
