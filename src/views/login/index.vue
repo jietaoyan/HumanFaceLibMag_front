@@ -19,7 +19,7 @@
         <el-input
           ref="userId"
           v-model="loginForm.userId"
-          placeholder="请输入姓名"
+          placeholder="请输入用户ID"
           name="userId"
           type="text"
           tabindex="1"

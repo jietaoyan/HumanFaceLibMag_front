@@ -39,7 +39,7 @@
 </template>
 <script>
 import { showMessage, genderJudge } from "@/utils/index";
-import defaultSettings from '@/settings';
+import defaultSettings from "@/settings";
 
 export default {
   name: "faceDetect",
@@ -65,10 +65,12 @@ export default {
     handleAvatarSuccess(res, file) {
       // console.log(file);
       this.message = file.response.message;
-      this.info.age = file.response.data.age;
-      this.info.gender = file.response.data.gender;
-      this.info.featsize = file.response.data.featsize;
-      this.info.feats = file.response.data.feats;
+      if (this.message == "执行成功") {
+        this.info.age = file.response.data.age;
+        this.info.gender = file.response.data.gender;
+        this.info.featsize = file.response.data.featsize;
+        this.info.feats = file.response.data.feats;
+      }
     },
     beforeAvatarUpload(file) {
       URL.revokeObjectURL(this.imageUrl);
@@ -97,7 +99,7 @@ export default {
   }
   &-table {
     width: 100%;
-    .messagt-area{
+    .messagt-area {
       margin-top: 10px;
     }
   }

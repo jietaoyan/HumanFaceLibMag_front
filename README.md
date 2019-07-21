@@ -20,6 +20,8 @@ This will automatically open http://localhost:9528
 # build for production environment
 npm run build:prod
 ```
+#ERROR 如果出错删除package-lock.json, node_modules,再执行
+npm i
 
 ## Advanced
 

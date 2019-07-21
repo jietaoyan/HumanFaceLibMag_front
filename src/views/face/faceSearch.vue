@@ -66,12 +66,14 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      console.log(file);
+      // console.log(file);
       this.message = file.response.message;
-      this.info.faceId = file.response.data.faceId;
-      this.info.id = file.response.data.id;
-      this.info.targetImgUrl = file.response.data.imageUrl;
-      this.info.score = file.response.data.score;
+      if (this.message == "执行成功") {
+        this.info.faceId = file.response.data.faceId;
+        this.info.id = file.response.data.id;
+        this.info.targetImgUrl = file.response.data.imageUrl;
+        this.info.score = file.response.data.score;
+      }
     },
     beforeAvatarUpload(file) {
       URL.revokeObjectURL(this.imageUrl);
@@ -101,7 +103,7 @@ export default {
   &-table {
     width: 100%;
 
-    .messagt-area{
+    .messagt-area {
       margin-top: 10px;
     }
   }

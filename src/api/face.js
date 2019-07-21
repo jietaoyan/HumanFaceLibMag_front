@@ -23,5 +23,15 @@ export function getFeatureSize() {
   })
 }
 
+//返回code=1，待定使用
+export function faceCopmare(data) {
+  return request({
+    url: 'face/compare',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
 
-
+  })
+}
