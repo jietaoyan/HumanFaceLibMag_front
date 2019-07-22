@@ -24,6 +24,21 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
+        <el-form-item label="用户头像" prop="photo" :label-width="formLabelWidth">
+          <el-upload
+            ref="file"
+            action="#"
+            :show-file-list="false"
+            :on-change="file1Change"
+            :before-upload="file1BeforUpload"
+            class="avatar-uploader"
+            accept="image/png, image/jpeg"
+            :auto-upload="false"
+          >
+            <img v-if="imageUrl1" :src="imageUrl1" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="备注" prop="userData" :label-width="formLabelWidth">
           <el-input
             v-model="admin.userData"
@@ -50,7 +65,7 @@
   </div>
 </template>
 <script>
-import { addAdmin } from "@/api/user";
+import { addUserFace } from "@/api/projects";
 import { showMessage } from "@/utils/index";
 import { isAccount } from "@/utils/validate";
 
@@ -77,8 +92,8 @@ export default {
         callback();
       }
     };
-    const nameValid = (rule, value, callback) => {};
     return {
+      formData: new FormData(),
       admin: {
         formUserId: "",
         name: "",
@@ -88,6 +103,7 @@ export default {
       formLabelWidth: "110px",
       loading: false,
       addSuccess: false,
+      imageUrl1: "",
       loginRules: {
         formUserId: [
           { required: true, message: "请输入用户名", trigger: "blur" },
@@ -113,20 +129,49 @@ export default {
       let that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let adminer = {};
-          adminer.userId = that.admin.formUserId;
-          adminer.name = that.admin.name;
-          that.loading = true;
+          if (this.imageUrl1) {
+            that.loading = true;
+            this.formData.append("projectId", this.projectId);
+            this.formData.append("userId", this.admin.formUserId);
+            this.formData.append("username", this.admin.name);
+            this.formData.append("userData", this.admin.userData);
 
-          //this.$refs.upload.submit();
-          that.loading = false;
-          showMessage(this, "创建成功");
-          that.addSuccess = true;
-          that.visibled = false;
+            this.$refs.file2.submit();
+            addUserFace(this.formData)
+              .then(resp => {
+                showMessage(this, "创建成功");
+                that.addSuccess = true;
+                that.visibled = false;
+              })
+              .catch(() => {
+                that.loading = false;
+              });
+            that.loading = false;
+          } else {
+            showMessage(this, "请上传头像", "error");
+            return false;
+          }
         } else {
+          showMessage(this, "请检查输入格式", "error");
           return false;
         }
       });
+    },
+    file1Change(file) {
+      const isJPG = file.raw.type === "image/jpeg";
+      const isLt2M = file.size / 512 / 512 < 1;
+      if (!isJPG) {
+        showMessage(this, "上传头像图片只能是 JPG 格式!", "error");
+      }
+      if (!isLt2M) {
+        showMessage(this, "上传头像图片大小不能超过 300k!", "error");
+      }
+      this.imageUrl1 = URL.createObjectURL(file.raw);
+      return isJPG && isLt2M;
+    },
+    file1BeforUpload() {
+      this.formData.append("file1", file);
+      return false;
     },
     //重置表单内容
     resetForm(formName) {
@@ -142,6 +187,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "../../styles/common";
 .form-button {
   text-align: center;
 }

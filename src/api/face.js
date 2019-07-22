@@ -32,6 +32,5 @@ export function faceCopmare(data) {
     headers: {
       'Content-Type': 'multipart/form-data'
     },
-
   })
 }

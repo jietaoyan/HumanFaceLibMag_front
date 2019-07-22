@@ -39,3 +39,16 @@ export function prjOfMe() {
     method: 'get'
   })
 }
+
+
+export function addUserFace(data) {
+  return request({
+    url: '/face/add-user',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+  })
+}
+
