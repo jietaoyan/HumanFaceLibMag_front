@@ -116,6 +116,9 @@ export default {
             pattern: /^[a-zA-Z0-9\u4E00-\u9FA5]*$/,
             message: "姓名请输入中文或英文"
           }
+        ],
+        userData:[
+          {max:1000,message:"备注最多输入1000个字符"}
         ]
       }
     };
@@ -136,14 +139,15 @@ export default {
             this.formData.append("username", this.admin.name);
             this.formData.append("userData", this.admin.userData);
 
-            this.$refs.file2.submit();
+            this.$refs.file.submit();
             addUserFace(this.formData)
               .then(resp => {
-                showMessage(this, "创建成功");
+                showMessage(this, "添加成功");
                 that.addSuccess = true;
                 that.visibled = false;
               })
-              .catch(() => {
+              .catch((e) => {
+                showMessage(this, "添加失败",'error');
                 that.loading = false;
               });
             that.loading = false;
@@ -169,8 +173,8 @@ export default {
       this.imageUrl1 = URL.createObjectURL(file.raw);
       return isJPG && isLt2M;
     },
-    file1BeforUpload() {
-      this.formData.append("file1", file);
+    file1BeforUpload(file) {
+      this.formData.append("file", file);
       return false;
     },
     //重置表单内容
