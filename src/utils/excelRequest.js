@@ -4,18 +4,17 @@ import store from '@/store'
 import { getToken } from '@/utils/tokenCookie'
 
 // create an axios instance
-const service = axios.create({
+const service2 = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
-  timeout: 30000, // request timeout
+  timeout: 100000, // request timeout
   validateStatus: (status) => {
     return true // 默认的
   },
-  cancelToken: new axios.CancelToken((cancel) => {})
 })
 
 // request interceptor
-service.interceptors.request.use(
+service2.interceptors.request.use(
   config => {
     // do something before request is sent
     if (store.getters.token) {
@@ -32,7 +31,7 @@ service.interceptors.request.use(
 )
 
 // response interceptor
-service.interceptors.response.use(
+service2.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
@@ -41,17 +40,17 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     // if the custom code is not 0, it is judged as an error.
-    if (res.code && res.code !== 0) {
-      Message({
-        message: res.message || '请求出错',
-        type: 'error',
-        duration: 4 * 1000
-      })
+    // if (res.code && res.code !== 0) {
+    //   Message({
+    //     message: res.message || '请求出错',
+    //     type: 'error',
+    //     duration: 4 * 1000
+    //   })
 
-      return Promise.reject(new Error(res.message || '请求出错'))
-    } else {
+    //   return Promise.reject(new Error(res.message || '请求出错'))
+    // } else {
       return res
-    }
+    // }
   },
   error => {
     console.log('err' + error) // for debug
@@ -64,4 +63,4 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+export default service2

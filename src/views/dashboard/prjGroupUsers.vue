@@ -71,7 +71,8 @@
 import {
   getGroupUsers,
   getGroupUsersPage,
-  deleteUserInGroup
+  deleteUserInGroup,
+  getGroupUserId
 } from "@/api/groups";
 import { genderJudge, showMessage } from "@/utils/index";
 import userAdd from "./prjGroupUserSelect";
@@ -127,10 +128,11 @@ export default {
         this.userList = resp.data.data;
         this.totalUsers = resp.data.totalCount;
         this.listLoading = false;
+
         //Todo,waiting groupusers id list
-        this.userList.forEach(user => {
-          this.groupUserIds.push(user.id);
-        });
+        getGroupUserId(this.groupId).then(resp=>{
+          this.groupUserIds = resp.data;
+        })
       });
     },
     //分页方法

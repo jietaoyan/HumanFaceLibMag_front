@@ -88,3 +88,10 @@ export function addUserInGroup(data){
   })
 }
 
+
+export function getGroupUserId(groupid) {
+  return request({
+    url: '/project/group/userIds/'+groupid,
+    method: 'get'
+  })
+}

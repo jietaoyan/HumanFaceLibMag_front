@@ -8,6 +8,12 @@
         @click="dialogVisible=true"
         class="title-button"
       >添加管理员</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-document-copy"
+        @click="exportVisible=true"
+        class="title-button"
+      >导出</el-button>
     </div>
     <div class="users-table">
       <el-table
@@ -55,17 +61,22 @@
     <div>
       <admin-form :dialogVisible="dialogVisible" @getVisible="toggleDetailShow(arguments)"></admin-form>
     </div>
+    <div>
+      <export-excel :dialogVisible="exportVisible" @getVisible="toggleExportShow()"></export-excel>
+    </div>
   </div>
 </template>
 <script>
 import { getUsersFromAdmin, setUserAdmin, resetPwdByAdmin } from "@/api/user";
 import { showMessage } from "@/utils/index";
 import adminForm from "./adminForm";
+import exportExcel from './exportExcel';
 
 export default {
   name: "allUsers",
   components: {
-    adminForm
+    adminForm,
+    exportExcel
   },
   created() {
     this.fetchData();
@@ -80,7 +91,8 @@ export default {
       },
       totalUsers: 0,
       tableHeight: window.innerHeight - 150,
-      dialogVisible: false
+      dialogVisible: false,
+      exportVisible:false
     };
   },
   methods: {
@@ -166,6 +178,9 @@ export default {
       if (data[1]) {
         this.fetchData();
       }
+    },
+    toggleExportShow(data){
+      this.exportVisible = data;
     }
   }
 };
