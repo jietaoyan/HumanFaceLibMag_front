@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import excelRequest from '@utils/excelRequest'
+import excelRequest from '@/utils/excelRequest'
 //登录
 export function login(data) {
   return request({

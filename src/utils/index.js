@@ -55,7 +55,7 @@ export function param2Obj(url) {
 
 
 //统一下载方法
-function downloadFile(resp,fileName) {
+export function downloadFile(resp,fileName) {
   let blob = new Blob([resp], {
     type: "application/octet-stream"
   });

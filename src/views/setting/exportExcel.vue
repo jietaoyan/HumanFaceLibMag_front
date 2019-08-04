@@ -18,6 +18,7 @@
         >导出Excel</el-button>
       </span>
     </el-dialog>
+    <div style="display:none">{{getVisible}}</div>
   </div>
 </template>
 <script>
@@ -36,7 +37,8 @@ export default {
   data() {
     return {
       type: "",
-      buttonLoading: false
+      buttonLoading: false,
+      visibled:false,
     };
   },
   methods: {
@@ -50,9 +52,9 @@ export default {
         if (resp) {
           let fileName = "";
           if (this.type == "admin") {
-            fileName = "管理人员清单.xlxs";
+            fileName = "管理人员清单.xlsx";
           } else {
-            fileName = "普通用户清单.xlxs";
+            fileName = "普通用户清单.xlsx";
           }
 
           downloadFile(resp, fileName);
@@ -68,7 +70,7 @@ export default {
       return this.dialogVisible;
     },
     buttonDisabled() {
-      return this.type == "admin" || this.type == "user";
+      return !(this.type == "admin" || this.type == "user");
     }
   }
 };
