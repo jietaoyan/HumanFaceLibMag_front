@@ -136,7 +136,7 @@ export default {
           });
         })
         .catch(() => {
-          showMessage(that, errorMsg, "error");
+          showMessage(that, '删除用户出错，请稍后再试', "error");
         });
     },
     //添加分组成功了分组则刷新页面加载

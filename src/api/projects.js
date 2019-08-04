@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+// import excelRequset from '@/utils/excelRequest'
 
 //项目列表
 export function getList() {
@@ -40,7 +41,7 @@ export function prjOfMe() {
   })
 }
 
-
+//添加人脸信息
 export function addUserFace(data) {
   return request({
     url: '/face/add-user',
@@ -52,3 +53,13 @@ export function addUserFace(data) {
   })
 }
 
+//导出姓名人脸Excel
+export function exportPrjFaceExcel(prjId){
+  return request({
+    url:'/project/face/excel/'+prjId ,
+    method:"get",
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+  })
+}

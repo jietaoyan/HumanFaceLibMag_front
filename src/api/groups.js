@@ -88,10 +88,22 @@ export function addUserInGroup(data){
   })
 }
 
-
+//获取该分组下用户id
 export function getGroupUserId(groupid) {
   return request({
     url: '/project/group/userIds/'+groupid,
     method: 'get'
+  })
+}
+
+
+//导出姓名人脸Excel
+export function exportGroupFaceExcel(groupid){
+  return request({
+    url:'/project/group/face/excel/'+groupid ,
+    method:"get",
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
   })
 }

@@ -9,6 +9,7 @@
         @click="dialogVisible=true"
         class="title-button"
       >添加用户</el-button>
+      <el-button type="primary" @click="exportExcel" :loading="buttonLoading">导出Excel</el-button>
     </div>
     <div class="users-table">
       <el-table
@@ -57,13 +58,20 @@
         :total="totalUsers"
       ></el-pagination>
     </div>
-    <user-add :projectId="projectId" :dialogVisible="dialogVisible" @getVisible="toggleDetailShow(arguments)"></user-add>
-   
+    <user-add
+      :projectId="projectId"
+      :dialogVisible="dialogVisible"
+      @getVisible="toggleDetailShow(arguments)"
+    ></user-add>
   </div>
 </template>
 <script>
-import { getUsersByProjectId, deleteUserFromProject } from "@/api/projects";
-import { showMessage, genderJudge } from "@/utils/index";
+import {
+  getUsersByProjectId,
+  deleteUserFromProject,
+  exportPrjFaceExcel
+} from "@/api/projects";
+import { showMessage, genderJudge, downloadFile } from "@/utils/index";
 import userAdd from "./prjUserAdd";
 
 export default {
@@ -93,7 +101,8 @@ export default {
       totalUsers: 0,
       tableHeight: window.innerHeight - 150,
       listLoading: true,
-      dialogVisible:false
+      buttonLoading: false,
+      dialogVisible: false
     };
   },
   methods: {
@@ -112,6 +121,30 @@ export default {
         this.userList = response.data.data;
         this.totalUsers = response.data.totalCount;
         this.listLoading = false;
+      });
+    },
+    exportExcel() {
+      this.$confirm("导出数据较多，需要较长时间，请耐心等待？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true
+      }).then(() => {
+        this.buttonLoading = true;
+        exportPrjFaceExcel(this.projectId)
+          .then(resp => {
+            this.buttonLoading = false;
+            if (resp) {
+              let fileName = this.projectName + "-用户人脸信息.xlsx";
+
+              downloadFile(resp, fileName);
+            } else {
+              showMessage(this, "没有数据供导出", "warning");
+            }
+          })
+          .catch(() => {
+            showMessage(this, '导出项目用户信息出错，请稍后再试', "error");
+          });
       });
     },
     //分页方法
@@ -142,13 +175,13 @@ export default {
           });
         })
         .catch(() => {
-          showMessage(that, errorMsg, "error");
+          showMessage(that, '服务器繁忙，请稍后再试', "error");
         });
     },
     //添加用户成功了分组则刷新页面加载
-    toggleDetailShow(data){
+    toggleDetailShow(data) {
       this.dialogVisible = data[0];
-      if(data[1]){
+      if (data[1]) {
         this.fetchData();
       }
     }

@@ -156,7 +156,7 @@ export default {
       addUserInGroup(data)
         .then(resp => {})
         .catch(() => {
-          showMessage(that, errorMsg, "添加到分组出错");
+          showMessage(that, '添加用户出错，请稍后再试', "error");
         });
     },
     returnVisible() {
