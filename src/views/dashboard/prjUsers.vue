@@ -9,7 +9,12 @@
         @click="dialogVisible=true"
         class="title-button"
       >添加用户</el-button>
-      <el-button type="primary" @click="exportExcel" :loading="buttonLoading">导出Excel</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-document-copy"
+        @click="exportExcel"
+        :loading="buttonLoading"
+      >导出Excel</el-button>
     </div>
     <div class="users-table">
       <el-table
@@ -143,7 +148,7 @@ export default {
             }
           })
           .catch(() => {
-            showMessage(this, '导出项目用户信息出错，请稍后再试', "error");
+            showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
           });
       });
     },
@@ -175,7 +180,7 @@ export default {
           });
         })
         .catch(() => {
-          showMessage(that, '服务器繁忙，请稍后再试', "error");
+          showMessage(that, "服务器繁忙，请稍后再试", "error");
         });
     },
     //添加用户成功了分组则刷新页面加载

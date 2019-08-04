@@ -9,7 +9,12 @@
         @click="groupUserAddShow=true"
         class="title-button"
       >添加用户</el-button>
-      <el-button type="primary" @click="exportExcel" :loading="buttonLoading">导出Excel</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-document-copy"
+        @click="exportExcel"
+        :loading="buttonLoading"
+      >导出Excel</el-button>
     </div>
     <div class="groupusers-table">
       <el-table
@@ -87,7 +92,7 @@ export default {
   created() {
     this.projectId = this.$route.query.projectId;
     this.projectName = this.$route.query.projectName;
-    this.groupId = Number( this.$route.query.groupId);
+    this.groupId = Number(this.$route.query.groupId);
     this.groupName = this.$route.query.groupName;
     this.fetchData();
   },
