@@ -81,7 +81,7 @@ import {
   getGroupUserId,
   exportGroupFaceExcel
 } from "@/api/groups";
-import { genderJudge, showMessage } from "@/utils/index";
+import { genderJudge, showMessage,downloadFile } from "@/utils/index";
 import userAdd from "./prjGroupUserSelect";
 
 export default {
@@ -144,7 +144,7 @@ export default {
       });
     },
     exportExcel() {
-      this.$confirm("导出数据较多，需要较长时间，请耐心等待？", "提示", {
+      this.$confirm("导出数据如若较多，需要较长时间，请耐心等待？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -154,6 +154,7 @@ export default {
         exportGroupFaceExcel(this.groupId)
           .then(resp => {
             this.buttonLoading = false;
+            debugger;
             if (resp) {
               let fileName = this.groupName + "-用户人脸信息.xlsx";
 
