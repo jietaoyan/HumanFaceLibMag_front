@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-// import excelRequest from '@/utils/excelRequest'
+import excelRequest from '@/utils/excelRequest'
 //登录
 export function login(data) {
   return request({
@@ -49,10 +49,11 @@ export function addAdmin(param) {
 }
 
 //导出用户Excel
-export function exportUsersExcel(type){
-  return request({
-    url:'/project/user/excel/'+type ,
+export function exportUsersExcel(type,start,end){
+  return excelRequest({
+    url:'/project/user/excel/'+type +'/'+start+'/'+end,
     method:"get",
+    responseType: "arraybuffer",
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     },

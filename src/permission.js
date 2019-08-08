@@ -3,7 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/tokenCookie' // get token from cookie
+import { getToken, getMvtUser } from '@/utils/tokenCookie' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -19,7 +19,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  const hasGetUserInfo = store.getters.name.id || sessionStorage.getItem('mvtlabsUserId');
+  const hasGetUserInfo = store.getters.name.id || getMvtUser();
 
   if (hasToken && hasGetUserInfo) {
     if (to.path === '/login') {

@@ -54,8 +54,8 @@ export function param2Obj(url) {
 }
 
 
-//统一下载方法
-export function downloadFile(resp,fileName) {
+//统一下载方法,从oss下载，只需获取url
+export function downloadFileFromOss(resp,fileName) {
     var url = resp.data.url;
     var tempLink = document.createElement("a");
     tempLink.style.display = "none";
@@ -67,4 +67,28 @@ export function downloadFile(resp,fileName) {
     document.body.appendChild(tempLink);
     tempLink.click();
     document.body.removeChild(tempLink);
+}
+
+//统一下载方法，后台服务器下载，完整文件数据
+export function downloadFile(resp,fileName) {
+  let blob = new Blob([resp], {
+    type: "application/octet-stream"
+  });
+
+  if (typeof window.navigator.msSaveBlob !== "undefined") {
+    window.navigator.msSaveBlob(blob, fileName);
+  } else {
+    var blobURL = window.URL.createObjectURL(blob);
+    var tempLink = document.createElement("a");
+    tempLink.style.display = "none";
+    tempLink.href = blobURL;
+    tempLink.setAttribute("download", fileName);
+    if (typeof tempLink.download === "undefined") {
+      tempLink.setAttribute("target", "_blank");
+    }
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
+    window.URL.revokeObjectURL(blobURL);
+  }
 }

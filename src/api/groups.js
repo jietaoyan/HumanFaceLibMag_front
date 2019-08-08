@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import excelRequset from '@/utils/excelRequest'
 
 //获取项目分组,param为projectId=projectid
 export function getGroupsList(param) {
@@ -96,12 +97,12 @@ export function getGroupUserId(groupid) {
   })
 }
 
-
 //导出姓名人脸Excel
-export function exportGroupFaceExcel(groupid){
-  return request({
-    url:'/project/group/face/excel/'+groupid ,
+export function exportGroupFaceExcel(groupid,start,end){
+  return excelRequset({
+    url:'/project/group/face/excel/'+groupid +'/'+start+'/'+end,
     method:"get",
+    responseType: "arraybuffer",
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     },

@@ -1,11 +1,12 @@
 import { login, logout } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/tokenCookie'
+import {getServerBandwidth} from '@/api/projects'
+import { getToken, setToken, removeToken,setMvtUser,removeMvtUser,setBandKey } from '@/utils/tokenCookie'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
   name: {},
-  roles: []
+  roles: [],
 }
 
 const mutations = {
@@ -17,7 +18,7 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
-  }
+  },
 }
 
 const actions = {
@@ -32,10 +33,14 @@ const actions = {
         nameInfo.name = data.name
         nameInfo.userId = data.userId
         nameInfo.isAdmin = data.isAdmin
-        sessionStorage.setItem('mvtlabsUserId',data.id);
+        setMvtUser(data.id);
         commit('SET_TOKEN', data.token)
         commit('SET_NAME', nameInfo)
         setToken(data.token)
+        //缓存带宽
+        getServerBandwidth().then(resp=>{
+          setBandKey(resp.data ? resp.data : 1)
+        })
         resolve()
       }).catch(error => {
         reject(error)
@@ -54,6 +59,7 @@ const actions = {
     commit('SET_TOKEN', '')
     commit('SET_ROLES', [])
     removeToken()
+    removeMvtUser()
     resetRouter()
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {

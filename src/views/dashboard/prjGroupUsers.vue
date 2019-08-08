@@ -144,7 +144,7 @@ export default {
       });
     },
     exportExcel() {
-      this.$confirm("导出数据如若较多，需要较长时间，请耐心等待？", "提示", {
+      this.$confirm("导出数据如若较多，需要较长时间，请耐心等待。", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

@@ -12,8 +12,7 @@
       <el-button
         type="primary"
         icon="el-icon-document-copy"
-        @click="exportExcel"
-        :loading="buttonLoading"
+        @click="exportVisible = true"
       >导出Excel</el-button>
     </div>
     <div class="users-table">
@@ -68,6 +67,13 @@
       :dialogVisible="dialogVisible"
       @getVisible="toggleDetailShow(arguments)"
     ></user-add>
+    <user-export
+      :projectId="projectId"
+      :projectName="projectName"
+      :total="totalUsers"
+      :dialogVisible="exportVisible"
+      @getVisible="toggleExportShow()"
+    ></user-export>
   </div>
 </template>
 <script>
@@ -78,11 +84,13 @@ import {
 } from "@/api/projects";
 import { showMessage, genderJudge, downloadFile } from "@/utils/index";
 import userAdd from "./prjUserAdd";
+import userExport from "./prjUsersDown";
 
 export default {
   name: "prjUsers",
   components: {
-    userAdd
+    userAdd,
+    userExport
   },
   created() {
     this.projectId = this.$route.query.projectId;
@@ -106,8 +114,8 @@ export default {
       totalUsers: 0,
       tableHeight: window.innerHeight - 150,
       listLoading: true,
-      buttonLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      exportVisible:false
     };
   },
   methods: {
@@ -126,30 +134,6 @@ export default {
         this.userList = response.data.data;
         this.totalUsers = response.data.totalCount;
         this.listLoading = false;
-      });
-    },
-    exportExcel() {
-      this.$confirm("导出数据较多，需要较长时间，请耐心等待？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true
-      }).then(() => {
-        this.buttonLoading = true;
-        exportPrjFaceExcel(this.projectId)
-          .then(resp => {
-            this.buttonLoading = false;
-            if (resp) {
-              let fileName = this.projectName + "-用户人脸信息.xlsx";
-
-              downloadFile(resp, fileName);
-            } else {
-              showMessage(this, "没有数据供导出", "warning");
-            }
-          })
-          .catch(() => {
-            showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
-          });
       });
     },
     //分页方法
@@ -189,6 +173,9 @@ export default {
       if (data[1]) {
         this.fetchData();
       }
+    },
+    toggleExportShow(data){
+      this.exportVisible = data;
     }
   }
 };
