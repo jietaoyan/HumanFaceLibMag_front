@@ -59,3 +59,19 @@ export function exportUsersExcel(type,start,end){
     },
   })
 }
+
+//管理员用户数量
+export function adminUsersCount(){
+  return request({
+    url: '/user/project/user/excel/adminUsers',
+    method: 'get'
+  })
+}
+
+//普通用户数量
+export function normalUserCount(){
+  return request({
+    url: '/user/project/user/excel/users',
+    method: 'get'
+  })
+}

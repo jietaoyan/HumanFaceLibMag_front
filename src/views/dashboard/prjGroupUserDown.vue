@@ -26,12 +26,12 @@
           :loading="loading"
         >导出</el-button>
       </div>
+      <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需2分钟时间）</p>
     </el-dialog>
-    <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需2分钟时间）</p>
   </div>
 </template>
 <script>
-import { exportPrjFaceExcel } from "@/api/projects";
+import { exportGroupFaceExcel } from "@/api/groups";
 import { showMessage, downloadFile } from "@/utils/index";
 import { getBandKey } from "@/utils/tokenCookie";
 
@@ -43,11 +43,11 @@ export default {
       required: true,
       default: 0
     },
-    projectId: {
-      type: String,
+    groupid: {
+      type: Number,
       required: true
     },
-    projectName: {
+    groupName: {
       type: String,
       required: true
     },
@@ -86,11 +86,11 @@ export default {
         let range = this.baseNum * this.bandWidth;
         this.start = range * this.selectValue;
         this.end = range * (this.selectValue + 1) - 1;
-        exportPrjFaceExcel(this.projectId, this.start, this.end)
+        exportGroupFaceExcel(this.groupid, this.start, this.end)
           .then(resp => {
             this.loading = false;
             if (resp) {
-              let fileName = this.projectName + "-用户人脸信息";
+              let fileName = this.groupName + "-用户人脸信息";
 
               downloadFile(resp, fileName);
             } else {

@@ -39,6 +39,7 @@ const actions = {
         setToken(data.token)
         //缓存带宽
         getServerBandwidth().then(resp=>{
+          console.log("band:"+resp.data)
           setBandKey(resp.data ? resp.data : 1)
         })
         resolve()

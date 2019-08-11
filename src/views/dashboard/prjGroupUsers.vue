@@ -12,8 +12,7 @@
       <el-button
         type="primary"
         icon="el-icon-document-copy"
-        @click="exportExcel"
-        :loading="buttonLoading"
+        @click="exportVisible=true"
       >导出Excel</el-button>
     </div>
     <div class="groupusers-table">
@@ -71,6 +70,13 @@
       :dialogVisible="groupUserAddShow"
       @getVisible="toggleUserAddShow(arguments)"
     ></user-add>
+    <user-down
+      :groupid="groupId"
+      :groupName="groupName"
+      :total="totalUsers"
+      :dialogVisible="exportVisible"
+      @getVisible="toggleExportShow()"
+    ></user-down>
   </div>
 </template>
 <script>
@@ -83,11 +89,13 @@ import {
 } from "@/api/groups";
 import { genderJudge, showMessage,downloadFile } from "@/utils/index";
 import userAdd from "./prjGroupUserSelect";
+import userDown from "./prjGroupUserDown";
 
 export default {
   name: "prjGroupUsers",
   components: {
-    userAdd
+    userAdd,
+    userDown
   },
   created() {
     this.projectId = this.$route.query.projectId;
@@ -116,8 +124,8 @@ export default {
       groupUserIds: [-1], //当前分组组的所有用户id，用于对用户列表筛选
       tableHeight: window.innerHeight - 150,
       listLoading: true,
-      buttonLoading: false,
-      groupUserAddShow: false
+      groupUserAddShow: false,
+      exportVisible:false
     };
   },
   methods: {
@@ -143,31 +151,7 @@ export default {
         });
       });
     },
-    exportExcel() {
-      this.$confirm("导出数据如若较多，需要较长时间，请耐心等待。", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true
-      }).then(() => {
-        this.buttonLoading = true;
-        exportGroupFaceExcel(this.groupId)
-          .then(resp => {
-            this.buttonLoading = false;
-            debugger;
-            if (resp) {
-              let fileName = this.groupName + "-用户人脸信息.xlsx";
-
-              downloadFile(resp, fileName);
-            } else {
-              showMessage(this, "没有数据供导出", "warning");
-            }
-          })
-          .catch(() => {
-            showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
-          });
-      });
-    },
+    
     //分页方法
     handleSizeChange(val) {
       this.pageInfo.pageSize = val;
@@ -180,7 +164,13 @@ export default {
     //用户添加页面
     toggleUserAddShow(data) {
       this.groupUserAddShow = data[0];
-      this.fetchData();
+      if(data[1]){
+        this.fetchData();
+      }
+    },
+    //导出页面切换
+    toggleExportShow(data){
+      this.exportVisible = data;
     },
     //删除用户
     deleteUser(row) {
