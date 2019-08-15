@@ -60,6 +60,18 @@ export function exportUsersExcel(type,start,end){
   })
 }
 
+//上传excel添加用户信息
+export function uploadUsersExcel(type,data){
+  return excelRequest({
+    url:'/project/user/excel/upload/'+type,
+    method:"post",
+    data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+  })
+}
+
 //管理员用户数量
 export function adminUsersCount(){
   return request({

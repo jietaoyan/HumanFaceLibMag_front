@@ -24,7 +24,7 @@
           @click.native.prevent="exportUser"
           :disabled="isSelect"
           :loading="loading"
-        >导出</el-button>
+        >导出数据</el-button>
       </div>
     </el-dialog>
     <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需2分钟时间）</p>

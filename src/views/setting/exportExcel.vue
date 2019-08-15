@@ -23,15 +23,15 @@
         </el-select>
       </div>
       <p></p>
-      <span slot="footer" class="dialog-footer">
+      <div class="button-center">
         <el-button
           type="primary"
           @click="exportExcel"
           :loading="buttonLoading"
           :disabled="buttonDisabled"
-        >导出Excel</el-button>
-        <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需30秒时间）</p>
-      </span>
+        >导出数据</el-button>
+      </div>
+      <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需30秒时间）</p>
     </el-dialog>
   </div>
 </template>
@@ -102,7 +102,7 @@ export default {
             showMessage(this, "没有数据供导出", "warning");
           }
         });
-      })
+      });
     }
   },
   computed: {
@@ -148,7 +148,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.dialog-footer {
+.button-center {
   text-align: center;
 }
 </style>

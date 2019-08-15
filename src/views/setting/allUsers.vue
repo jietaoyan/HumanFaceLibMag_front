@@ -14,6 +14,12 @@
         @click="exportVisible=true"
         class="title-button"
       >导出</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-document-copy"
+        @click="uploadVisible=true"
+        class="title-button"
+      >导入</el-button>
     </div>
     <div class="users-table">
       <el-table
@@ -60,9 +66,8 @@
     </div>
     <div>
       <admin-form :dialogVisible="dialogVisible" @getVisible="toggleDetailShow(arguments)"></admin-form>
-    </div>
-    <div>
       <export-excel :dialogVisible="exportVisible" @getVisible="toggleExportShow()"></export-excel>
+      <upload-excel :dialogVisible="uploadVisible" @getVisible="toggleuploadShow(arguments)"></upload-excel>
     </div>
   </div>
 </template>
@@ -71,12 +76,14 @@ import { getUsersFromAdmin, setUserAdmin, resetPwdByAdmin } from "@/api/user";
 import { showMessage } from "@/utils/index";
 import adminForm from "./adminForm";
 import exportExcel from './exportExcel';
+import uploadExcel from './uploadExcel';
 
 export default {
   name: "allUsers",
   components: {
     adminForm,
-    exportExcel
+    exportExcel,
+    uploadExcel
   },
   created() {
     this.fetchData();
@@ -92,7 +99,8 @@ export default {
       totalUsers: 0,
       tableHeight: window.innerHeight - 150,
       dialogVisible: false,
-      exportVisible:false
+      exportVisible:false,
+      uploadVisible:false
     };
   },
   methods: {
@@ -181,6 +189,12 @@ export default {
     },
     toggleExportShow(data){
       this.exportVisible = data;
+    },
+    toggleuploadShow(data){
+      this.uploadVisible = data[0];
+      if (data[1]) {
+        this.fetchData();
+      }
     }
   }
 };
