@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import excelRequset from '@/utils/excelRequest'
+import excelRequest from '@/utils/excelRequest'
 
 //项目列表
 export function getList() {
@@ -55,12 +55,24 @@ export function addUserFace(data) {
 
 //导出姓名人脸Excel
 export function exportPrjFaceExcel(prjId,start,end){
-  return excelRequset({
+  return excelRequest({
     url:'/project/face/excel/'+prjId +'/'+start+'/'+end,
     method:"get",
     responseType: "arraybuffer",
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
+    },
+  })
+}
+
+//上传excel添加人脸信息
+export function uploadUsersFaces2Project(projectid,data){
+  return excelRequest({
+    url:'/project/face/upload/'+projectid,
+    method:"post",
+    data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
     },
   })
 }

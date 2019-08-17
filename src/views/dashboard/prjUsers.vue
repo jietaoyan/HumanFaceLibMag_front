@@ -13,7 +13,13 @@
         type="primary"
         icon="el-icon-document-copy"
         @click="exportVisible = true"
-      >导出Excel</el-button>
+      >导出数据</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-upload"
+        @click="uploadVisible=true"
+        class="title-button"
+      >导入数据</el-button>
     </div>
     <div class="users-table">
       <el-table
@@ -74,6 +80,12 @@
       :dialogVisible="exportVisible"
       @getVisible="toggleExportShow()"
     ></user-export>
+    <face-upload
+      :projectid="projectId"
+      :uploadType="0"
+      :dialogVisible="uploadVisible"
+      @getVisible="toggleUploadShow(arguments)">
+    </face-upload>
   </div>
 </template>
 <script>
@@ -85,12 +97,14 @@ import {
 import { showMessage, genderJudge, downloadFile } from "@/utils/index";
 import userAdd from "./prjUserAdd";
 import userExport from "./prjUsersDown";
+import faceUpload from './faceUpload';
 
 export default {
   name: "prjUsers",
   components: {
     userAdd,
-    userExport
+    userExport,
+    faceUpload
   },
   created() {
     this.projectId = this.$route.query.projectId;
@@ -115,7 +129,8 @@ export default {
       tableHeight: window.innerHeight - 150,
       listLoading: true,
       dialogVisible: false,
-      exportVisible:false
+      exportVisible:false,
+      uploadVisible:false
     };
   },
   methods: {
@@ -176,6 +191,12 @@ export default {
     },
     toggleExportShow(data){
       this.exportVisible = data;
+    },
+    toggleUploadShow(data){
+      this.uploadVisible = data[0];
+      if (data[1]) {
+        this.fetchData();
+      }
     }
   }
 };

@@ -74,7 +74,7 @@ export default {
         this.$refs.upload.submit();
         uploadUsersExcel(this.type,this.formData).then(resp => {
           this.buttonLoading = false;
-          console.log(resp);
+          // console.log(resp);
           if (resp.data == 'success') {
             showMessage(this, "导入数据处理完成", "warning");
             this.uploadFlag = true;
@@ -90,15 +90,10 @@ export default {
       return false;
     },
     fileChange(file,file_list){
-      file_list.forEach(e => {
-        let temp = {};
-        temp.name = e.name;
-        this.fileList.push(temp);
-      });
+      this.fileList = file_list;
     }
   },
   computed: {
-
     getVisible() {
       this.visibled = this.dialogVisible;
       return this.dialogVisible;

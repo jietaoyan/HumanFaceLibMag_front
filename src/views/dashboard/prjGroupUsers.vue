@@ -13,7 +13,13 @@
         type="primary"
         icon="el-icon-document-copy"
         @click="exportVisible=true"
-      >导出Excel</el-button>
+      >导出数据</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-upload"
+        @click="uploadVisible=true"
+        class="title-button"
+      >导入数据</el-button>
     </div>
     <div class="groupusers-table">
       <el-table
@@ -77,6 +83,13 @@
       :dialogVisible="exportVisible"
       @getVisible="toggleExportShow()"
     ></user-down>
+    <face-upload
+      :projectid="projectId"
+      :groupid="groupId"
+      :uploadType="1"
+      :dialogVisible="uploadVisible"
+      @getVisible="toggleUploadShow(arguments)">
+    </face-upload>
   </div>
 </template>
 <script>
@@ -90,12 +103,14 @@ import {
 import { genderJudge, showMessage,downloadFile } from "@/utils/index";
 import userAdd from "./prjGroupUserSelect";
 import userDown from "./prjGroupUserDown";
+import faceUpload from './faceUpload';
 
 export default {
   name: "prjGroupUsers",
   components: {
     userAdd,
-    userDown
+    userDown,
+    faceUpload
   },
   created() {
     this.projectId = this.$route.query.projectId;
@@ -125,7 +140,8 @@ export default {
       tableHeight: window.innerHeight - 150,
       listLoading: true,
       groupUserAddShow: false,
-      exportVisible:false
+      exportVisible:false,
+      uploadVisible:false
     };
   },
   methods: {
@@ -171,6 +187,12 @@ export default {
     //导出页面切换
     toggleExportShow(data){
       this.exportVisible = data;
+    },
+    toggleUploadShow(data){
+      this.uploadVisible = data[0];
+      if (data[1]) {
+        this.fetchData();
+      }
     },
     //删除用户
     deleteUser(row) {

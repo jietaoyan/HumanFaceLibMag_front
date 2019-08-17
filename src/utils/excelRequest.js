@@ -25,7 +25,7 @@ service2.interceptors.request.use(
     return config
   },
   error => {
-    console.log(error) // for debug
+    //console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -42,7 +42,7 @@ service2.interceptors.response.use(
     
   },
   error => {
-    console.log('err' + error) // for debug
+    //console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

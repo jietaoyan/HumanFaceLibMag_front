@@ -29,7 +29,13 @@
           @click="exportExcel"
           :loading="buttonLoading"
           :disabled="buttonDisabled"
-        >导出数据</el-button>
+        >导出选择数据</el-button>
+        <el-button
+          type="primary"
+          @click="exportAllExcel"
+          :loading="btnAllLoading"
+          :disabled="btnAllDisabled"
+        >导出所有数据</el-button>
       </div>
       <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需30秒时间）</p>
     </el-dialog>
@@ -60,6 +66,7 @@ export default {
       adminCount: 0,
       nomalCount: 0,
       buttonLoading: false,
+      btnAllLoading: false,
       visibled: false
     };
   },
@@ -95,6 +102,33 @@ export default {
               fileName = "管理人员清单";
             } else {
               fileName = "普通用户清单";
+            }
+
+            downloadFile(resp, fileName);
+          } else {
+            showMessage(this, "没有数据供导出", "warning");
+          }
+        });
+      });
+    },
+    exportAllExcel() {
+      this.$confirm("导出数据若较多，需要较长时间，请耐心等待。", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true
+      }).then(() => {
+        this.btnAllLoading = true;
+        this.start = 0;
+        this.end = this.type == "admin" ? this.adminCount : this.nomalCount;
+        exportUsersExcel(this.type, this.start, this.end).then(resp => {
+          this.btnAllLoading = false;
+          if (resp) {
+            let fileName = "";
+            if (this.type == "admin") {
+              fileName = "所有管理人员清单";
+            } else {
+              fileName = "所有普通用户清单";
             }
 
             downloadFile(resp, fileName);
@@ -143,6 +177,9 @@ export default {
         (this.type == "admin" || this.type == "user") &&
         this.selectValue > -1
       );
+    },
+    btnAllDisabled() {
+      return !(this.type == "admin" || this.type == "user");
     }
   }
 };

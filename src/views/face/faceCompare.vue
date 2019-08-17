@@ -80,7 +80,7 @@ export default {
         this.$refs.file1.submit();
         this.$refs.file2.submit();
         this.faceCopmare(this.formData).then(resp => {
-          console.log(resp);
+          // console.log(resp);
           this.message = resp.data.message;
           if(this.message == '执行成功'){
             this.score = resp.data.data.score;

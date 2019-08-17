@@ -24,7 +24,12 @@
           @click.native.prevent="exportUser"
           :disabled="isSelect"
           :loading="loading"
-        >导出数据</el-button>
+        >导出选择数据</el-button>
+        <el-button
+          type="primary"
+          @click.native.prevent="exportAllUser"
+          :loading="allLoading"
+        >导出所有数据</el-button>
       </div>
       <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需2分钟时间）</p>
     </el-dialog>
@@ -68,7 +73,8 @@ export default {
       bandWidth: 1,
       visibled: false,
       baseNum: 5000,
-      loading: false
+      loading: false,
+      allLoading:false
     };
   },
   methods: {
@@ -91,6 +97,31 @@ export default {
             this.loading = false;
             if (resp) {
               let fileName = this.groupName + "-用户人脸信息";
+
+              downloadFile(resp, fileName);
+            } else {
+              showMessage(this, "没有数据供导出", "warning");
+            }
+          })
+          .catch(() => {
+            showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
+          });
+      });
+    },
+    exportAllUser(){
+      this.$confirm("导出数据若较多，需要较长时间，请耐心等待。", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true
+      }).then(() => {
+        this.allLoading = true;
+        this.start = 0;
+        exportGroupFaceExcel(this.groupid, this.start, this.total)
+          .then(resp => {
+            this.allLoading = false;
+            if (resp) {
+              let fileName = this.groupName + "-所有用户人脸信息";
 
               downloadFile(resp, fileName);
             } else {

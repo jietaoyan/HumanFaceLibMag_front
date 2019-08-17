@@ -13,13 +13,13 @@
         icon="el-icon-document-copy"
         @click="exportVisible=true"
         class="title-button"
-      >导出</el-button>
+      >导出数据</el-button>
       <el-button
         type="primary"
-        icon="el-icon-document-copy"
+        icon="el-icon-upload"
         @click="uploadVisible=true"
         class="title-button"
-      >导入</el-button>
+      >导入数据</el-button>
     </div>
     <div class="users-table">
       <el-table
