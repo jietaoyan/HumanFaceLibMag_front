@@ -74,6 +74,9 @@ export default {
         this.$refs.upload.submit();
         uploadUsersExcel(this.type,this.formData).then(resp => {
           this.buttonLoading = false;
+          this.type = '';
+          this.formData = new FormData();
+          this.fileList = [];
           // console.log(resp);
           if (resp.data == 'success') {
             showMessage(this, "导入数据处理完成", "warning");
@@ -84,7 +87,7 @@ export default {
           }
         }).catch((e)=>{
           this.buttonLoading = false;
-          console.log(e);
+          // console.log(e);
           showMessage(this, "数据导入出错，请稍后再试", "warning");
         });
       });

@@ -155,6 +155,9 @@ export default {
           addAdmin(adminer).then(resp => {
             that.loading = false;
             showMessage(this, "创建成功");
+            this.userId = '';
+            this.password = '';
+            this.name = '';
             that.addSuccess = true;
             that.visibled = false;
           });

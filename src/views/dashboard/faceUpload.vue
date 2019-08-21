@@ -89,7 +89,7 @@ export default {
             this.buttonLoading = false;
             console.log(e);
             showMessage(this, "数据导入出错，请稍后再试", "warning");
-        });
+          });
         } else if (this.uploadType == 1) {
           uploadUsersFaces2Group(
             this.projectid,
@@ -107,6 +107,8 @@ export default {
     },
     commonUploadResult(resp) {
       this.buttonLoading = false;
+      this.formData = new FormData();
+      this.fileList = [];
       // console.log(resp);
       if (resp.data == "success") {
         showMessage(this, "导入数据处理完成", "warning");

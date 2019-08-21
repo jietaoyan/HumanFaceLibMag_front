@@ -95,6 +95,7 @@ export default {
         exportGroupFaceExcel(this.groupid, this.start, this.end)
           .then(resp => {
             this.loading = false;
+            this.selectValue = '';
             if (resp) {
               let fileName = this.groupName + "-用户人脸信息";
 

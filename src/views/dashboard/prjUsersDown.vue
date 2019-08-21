@@ -95,6 +95,7 @@ export default {
         exportPrjFaceExcel(this.projectId, this.start, this.end)
           .then(resp => {
             this.loading = false;
+            this.selectValue = '';
             if (resp) {
               let fileName = this.projectName + "-用户人脸信息";
 

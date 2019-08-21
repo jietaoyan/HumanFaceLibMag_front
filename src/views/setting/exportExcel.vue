@@ -96,6 +96,8 @@ export default {
         this.end = range * (this.selectValue + 1) - 1;
         exportUsersExcel(this.type, this.start, this.end).then(resp => {
           this.buttonLoading = false;
+          this.type = '';
+          this.selectValue = '';
           if (resp) {
             let fileName = "";
             if (this.type == "admin") {

@@ -142,6 +142,10 @@ export default {
             this.$refs.file.submit();
             addUserFace(this.formData)
               .then(resp => {
+                this.formData = new FormData();
+                this.admin.name = '';
+                this.admin.userData = '';
+                this.admin.formUserId = '';
                 showMessage(this, "添加成功");
                 that.addSuccess = true;
                 that.visibled = false;
