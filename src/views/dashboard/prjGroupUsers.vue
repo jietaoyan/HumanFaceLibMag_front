@@ -34,7 +34,7 @@
           <template slot-scope="scope">{{ scope.$index + 1}}</template>
         </el-table-column>
         <el-table-column label="姓名" width="120" prop="username" align="center"></el-table-column>
-        <el-table-column label="编号" width="160" prop="userId" align="center"></el-table-column>
+        <el-table-column label="用户ID" width="160" prop="userId" align="center"></el-table-column>
         <el-table-column label="年龄" width="90" prop="age" align="center"></el-table-column>
         <el-table-column label="性别" width="90" align="center">
           <template slot-scope="scope">

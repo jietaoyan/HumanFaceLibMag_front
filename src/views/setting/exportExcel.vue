@@ -108,6 +108,9 @@ export default {
           } else {
             showMessage(this, "没有数据供导出", "warning");
           }
+        }).catch(()=>{
+          this.buttonLoading = false;
+          showMessage(this, "导出用户数据出错", "error");
         });
       });
     },
@@ -135,6 +138,9 @@ export default {
           } else {
             showMessage(this, "没有数据供导出", "warning");
           }
+        }).catch(()=>{
+          this.btnAllLoading = false;
+          showMessage(this, "导出用户数据出错", "error");
         });
       });
     }

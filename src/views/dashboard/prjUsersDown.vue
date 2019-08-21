@@ -31,8 +31,8 @@
           :loading="allLoading"
         >导出所有数据</el-button>
       </div>
-    </el-dialog>
     <p style="color:grey;">（导出{{baseNum*bandWidth}}条用户人脸数据约需2分钟时间）</p>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -104,6 +104,7 @@ export default {
             }
           })
           .catch(() => {
+            this.loading = false;
             showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
           });
       });
@@ -129,6 +130,7 @@ export default {
             }
           })
           .catch(() => {
+            this.allLoading = true;
             showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
           });
       });

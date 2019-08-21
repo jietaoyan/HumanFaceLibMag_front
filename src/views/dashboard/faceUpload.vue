@@ -85,7 +85,11 @@ export default {
         if (this.uploadType == 0) {
           uploadUsersFaces2Project(this.projectid, this.formData).then(resp => {
             this.commonUploadResult(resp);
-          });
+          }).catch((e)=>{
+            this.buttonLoading = false;
+            console.log(e);
+            showMessage(this, "数据导入出错，请稍后再试", "warning");
+        });
         } else if (this.uploadType == 1) {
           uploadUsersFaces2Group(
             this.projectid,
@@ -93,7 +97,11 @@ export default {
             this.formData
           ).then(resp => {
               this.commonUploadResult(resp);
-          });
+          }).catch((e)=>{
+            this.buttonLoading = false;
+            console.log(e);
+            showMessage(this, "数据导入出错，请稍后再试", "warning");
+        });
         }
       });
     },

@@ -82,6 +82,10 @@ export default {
           } else {
             showMessage(this, "数据导入出错，请稍后再试", "warning");
           }
+        }).catch((e)=>{
+          this.buttonLoading = false;
+          console.log(e);
+          showMessage(this, "数据导入出错，请稍后再试", "warning");
         });
       });
     },

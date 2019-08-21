@@ -104,7 +104,8 @@ export default {
             }
           })
           .catch(() => {
-            showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
+            this.loading = false;
+            showMessage(this, "导出分组用户信息出错，请稍后再试", "error");
           });
       });
     },
@@ -129,7 +130,8 @@ export default {
             }
           })
           .catch(() => {
-            showMessage(this, "导出项目用户信息出错，请稍后再试", "error");
+            this.allLoading = true;
+            showMessage(this, "导出分组用户信息出错，请稍后再试", "error");
           });
       });
     }
