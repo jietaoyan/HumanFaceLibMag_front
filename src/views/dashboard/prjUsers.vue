@@ -56,6 +56,11 @@
             <el-button type="text" @click="deleteUser(scope.row)">删除</el-button>
           </template>
         </el-table-column>
+        <el-table-column label="添加到分组" width="120" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="addUser2Group(scope.row)">添加</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="备注" prop="userData" align="left" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <el-pagination
@@ -181,6 +186,11 @@ export default {
         .catch(() => {
           showMessage(that, "服务器繁忙，请稍后再试", "error");
         });
+    },
+
+//添加用户到分组
+    addUser2Group(row){
+
     },
     //添加用户成功了分组则刷新页面加载
     toggleDetailShow(data) {

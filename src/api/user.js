@@ -20,10 +20,18 @@ export function getUsersFromAdmin(param) {
   })
 }
 
-//将用户设置为管理员,param为userId=id
+//将用户设置为管理员,param为id=id
 export function setUserAdmin(param) {
   return request({
     url: '/admin/user/set-admin?' + param,
+    method: 'put'
+  })
+}
+
+//将用户设置为普通用户,param为id=id
+export function setUser2NormalUser(param) {
+  return request({
+    url: '/admin/user/cancel-admin?' + param,
     method: 'put'
   })
 }
@@ -84,6 +92,22 @@ export function adminUsersCount(){
 export function normalUserCount(){
   return request({
     url: '/user/project/user/excel/users',
+    method: 'get'
+  })
+}
+
+//按用户名查找对应的项目名（有的话用户userid和人脸userid是相同的）
+export function getProjectNameByUserid(userid){
+  return request({
+    url: '/admin/user/project/' + userid,
+    method: 'get'
+  })
+}
+
+//删除用户，同时删除相同userid下的人脸数据
+export function deleteUserByUseridAndPrjid(projectid,userid){
+  return request({
+    url: '/admin/user/delete?projectId='+projectid + '&userId='+userid,
     method: 'get'
   })
 }

@@ -42,7 +42,9 @@
         </el-table-column>
         <el-table-column label="调整" width="170" align="center">
           <template slot-scope="scope">
-            <div v-if="(/^true$/i).test(scope.row.isAdmin)"></div>
+            <div v-if="(/^true$/i).test(scope.row.isAdmin)">
+              <el-button type="text" @click="setUser2User(scope.row)">取消管理员</el-button>
+            </div>
             <div v-else>
               <el-button type="text" @click="setUser2Admin(scope.row)">设置为管理员</el-button>
             </div>
@@ -51,6 +53,11 @@
         <el-table-column label="密码重置" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="resetPassword(scope.row)">重置密码</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="deleteUser(scope.row)">删除用户</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,7 +79,8 @@
   </div>
 </template>
 <script>
-import { getUsersFromAdmin, setUserAdmin, resetPwdByAdmin } from "@/api/user";
+import { getUsersFromAdmin, setUserAdmin, resetPwdByAdmin,getProjectNameByUserid
+  ,deleteUserByUseridAndPrjid,setUser2NormalUser } from "@/api/user";
 import { showMessage } from "@/utils/index";
 import adminForm from "./adminForm";
 import exportExcel from './exportExcel';
@@ -157,6 +165,32 @@ export default {
           that.listLoading = false;
         });
     },
+    setUser2User(row){
+      let that = this;
+      that
+        .$confirm("是否将用户“" + row.name + "”取消管理员权限?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          center: true
+        })
+        .then(() => {
+          // debugger
+          that.listLoading = true;
+          let param = "id=" + row.id;
+          setUser2NormalUser(param).then(resp => {
+            showMessage(that, "取消管理员权限成功");
+            // that.fetchData();
+            row.isAdmin = false;
+            that.listLoading = false;
+          });
+        })
+        .catch(() => {
+          showMessage(that, "服务器繁忙，请稍后再试?", "error");
+          that.listLoading = false;
+        });
+      
+    },
     //重置密码
     resetPassword(row) {
       let that = this;
@@ -180,6 +214,67 @@ export default {
           showMessage(that, "服务器繁忙，请稍后再试", "error");
           that.listLoading = false;
         });
+    },
+    deleteUser(row){
+      let that = this;
+      that.listLoading = true;
+
+      getProjectNameByUserid(row.userId).then(resp=>{
+        that.listLoading = false;
+        let projectList = resp.data;
+        
+        if(projectList.length){
+          let len = projectList.length;
+          let prjNames = '';
+          let projectIds = '';
+          projectList.forEach(function(item){
+            prjNames += item.name + ',';
+            projectIds += item.projectId + ',';
+          })
+          prjNames = prjNames.substring(0,prjNames.length - 1);
+          projectIds = projectIds.substring(0,projectIds.length - 1);
+          that.$confirm('删除操作将同时删除项目“'+prjNames+'”中的人脸信息，请确认是否删除该用户？'
+          ,'提示',{
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+            center: true
+          }).then(()=>{
+            that.listLoading = true;
+            deleteUserByUseridAndPrjid(projectIds,row.userId).then(resp =>{
+              that.listLoading = false;
+              showMessage(that, "删除用户“"+row.name+"”成功");
+              this.fetchData();
+            }).catch(e=>{
+              showMessage(that, "删除出错，请稍后再试", "error");
+              console.log(e)
+              that.listLoading = false;
+            })
+          })
+        }else{
+          that.$confirm('请确认是否删除用户“'+row.name+'”？'
+          ,'提示',{
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+            center: true
+          }).then(()=>{
+            that.listLoading = true;
+            deleteUserByUseridAndPrjid('',row.userId).then(resp =>{
+              that.listLoading = false;
+              showMessage(that, "删除用户“"+row.name+"”成功");
+              this.fetchData();
+            }).catch(e=>{
+              showMessage(that, "删除出错，请稍后再试", "error");
+              console.log(e)
+              that.listLoading = false;
+            })
+          })
+        }
+      })
+    },
+    deleteUserDetail(){
+
     },
     toggleDetailShow(data) {
       this.dialogVisible = data[0];
@@ -210,7 +305,7 @@ export default {
   }
   &-table {
     .el-table {
-      width: 880px;
+      width: 1050px;
     }
   }
 }
