@@ -97,6 +97,14 @@ export function getGroupUserId(groupid) {
   })
 }
 
+//获取该分组下用户id
+export function getGroupidsByUserId(userid) {
+  return request({
+    url: '/project/group/groupids/'+userid,
+    method: 'get'
+  })
+}
+
 //导出姓名人脸Excel
 export function exportGroupFaceExcel(groupid,start,end){
   return excelRequest({

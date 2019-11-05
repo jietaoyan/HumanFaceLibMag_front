@@ -157,6 +157,7 @@ export default {
         .then(resp => {})
         .catch(() => {
           showMessage(that, '添加用户出错，请稍后再试', "error");
+          row.isAdd = false;
         });
     },
     returnVisible() {
