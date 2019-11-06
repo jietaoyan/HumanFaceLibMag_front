@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-dialog title="选择项目分组" :visible.sync="visibled" width="400px" @close="returnVisible">
+    <el-dialog title="选择项目分组" :visible.sync="visibled" width="500px" @close="returnVisible">
       <hr />
       <el-row>
         <el-col :span="24">
-          <span>{{username}}</span>
+          <span>姓名：{{username}}</span>
         </el-col>
       </el-row>
       <div class="groups-table">
@@ -20,13 +20,14 @@
             <template slot-scope="scope">{{ scope.$index + 1}}</template>
           </el-table-column>
           <el-table-column label="分组名称" prop="name" align="left"></el-table-column>
+          <el-table-column label="操作" width="100" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.isAdd"></span>
+              <el-button v-else type="text" @click="insertIntoGroup(scope.row)">加入</el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <el-table-column label="操作" width="100" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.isAdd"></span>
-            <el-button v-else type="text" @click="insertIntoGroup(scope.row)">加入</el-button>
-          </template>
-        </el-table-column>
+
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -50,22 +51,18 @@ import {
 import { showMessage } from "@/utils/index";
 
 export default {
-  name: "prjGroupsUsers",
+  name: "prjGroupSelect",
   props: {
     projectId: {
       type: String,
       required: true
     },
-    userid:{
-      type:String,
-      required:true
+    userid: {
+      type: String,
+      required: true
     },
-    username:{
-      type:String,
-      required:true
-    },
-    userGroupids:{
-      type:Array,
+    username: {
+      type: String,
       required: true
     },
     dialogVisible: {
@@ -78,12 +75,13 @@ export default {
     return {
       visibled: false,
       groupList: [],
+      userGroupids: [],
       pageInfo: {
         pageSize: 20,
         pageIndex: 0
       },
       totalGroups: 0,
-      tableHeight: 600,
+      tableHeight: 400,
       listLoading: true
     };
   },
@@ -97,20 +95,25 @@ export default {
         this.pageInfo.pageIndex +
         "&pageSize=" +
         this.pageInfo.pageSize;
-      getGroupsListPage(params).then(response => {
-        this.groupList = response.data.data;
-        this.totalGroups = response.data.totalCount;
-        this.groupList.forEach(group => {
-          //增加一个属性判断是否已经添加到分组
-          group.isAdd = false;
-          if (
-            this.userGroupids.length > 0 &&
-            this.userGroupids.includes(group.id)
-          ) {
-            group.isAdd = true;
-          }
+      getGroupidsByUserId(this.userid).then(resp => {
+        this.userGroupids = resp.data;
+        // console.log(this.userGroupids);
+        getGroupsListPage(params).then(response => {
+          this.groupList = response.data.data;
+          this.totalGroups = response.data.totalCount;
+          this.groupList.forEach(group => {
+            //增加一个属性判断是否已经添加到分组
+            group.isAdd = false;
+            console.log(group);
+            if (
+              this.userGroupids.length > 0 &&
+              this.userGroupids.includes(group.id)
+            ) {
+              group.isAdd = true;
+            }
+          });
+          this.listLoading = false;
         });
-        this.listLoading = false;
       });
     },
     //分页方法
@@ -130,10 +133,11 @@ export default {
       data.projectId = this.projectId;
       data.userIds = [];
       data.userIds.push(this.userid);
+      // console.log(data)
       addUserInGroup(data)
         .then(resp => {})
         .catch(() => {
-          showMessage(that, '添加用户出错，请稍后再试', "error");
+          showMessage(that, "添加用户出错，请稍后再试", "error");
           row.isAdd = false;
         });
     },
@@ -154,5 +158,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
 </style>

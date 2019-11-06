@@ -91,6 +91,13 @@
       :dialogVisible="uploadVisible"
       @getVisible="toggleUploadShow(arguments)">
     </face-upload>
+    <group-select
+      :projectId="projectId"
+      :userid="userid"
+      :username="username"
+      :dialogVisible='groupVisible'
+      @getVisible="toggleGroupSelect()">
+    </group-select>
   </div>
 </template>
 <script>
@@ -103,13 +110,15 @@ import { showMessage, genderJudge, downloadFile } from "@/utils/index";
 import userAdd from "./prjUserAdd";
 import userExport from "./prjUsersDown";
 import faceUpload from './faceUpload';
+import groupSelect from './prjGroupSelect';
 
 export default {
   name: "prjUsers",
   components: {
     userAdd,
     userExport,
-    faceUpload
+    faceUpload,
+    groupSelect
   },
   created() {
     this.projectId = this.$route.query.projectId;
@@ -135,7 +144,10 @@ export default {
       listLoading: true,
       dialogVisible: false,
       exportVisible:false,
-      uploadVisible:false
+      uploadVisible:false,
+      groupVisible:false,
+      userid:'',
+      username:''
     };
   },
   methods: {
@@ -190,7 +202,9 @@ export default {
 
 //添加用户到分组
     addUser2Group(row){
-
+      this.userid = row.userId;
+      this.username = row.username;
+      this.groupVisible = true;
     },
     //添加用户成功了分组则刷新页面加载
     toggleDetailShow(data) {
@@ -207,6 +221,9 @@ export default {
       if (data[1]) {
         this.fetchData();
       }
+    },
+    toggleGroupSelect(data){
+      this.groupVisible = data;
     }
   }
 };
