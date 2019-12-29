@@ -1,25 +1,38 @@
 <template>
   <div class="users-container">
     <div class="users-title">
-      <span>项目用户列表</span>
-      <span class="title-small">{{'(' + projectName + ')'}}&nbsp;&nbsp;</span>
-      <el-button
-        type="primary"
-        icon="el-icon-s-custom"
-        @click="dialogVisible=true"
-        class="title-button"
-      >添加用户</el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-document-copy"
-        @click="exportVisible = true"
-      >导出数据</el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-upload"
-        @click="uploadVisible=true"
-        class="title-button"
-      >导入数据</el-button>
+      <el-row :gutter="10">
+        <el-col :span="18"><div><span>项目用户列表</span>
+            <span class="title-small">{{'(' + projectName + ')'}}&nbsp;&nbsp;</span>
+            <el-button
+              type="primary"
+              icon="el-icon-s-custom"
+              @click="dialogVisible=true"
+              class="title-button"
+            >添加用户</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-document-copy"
+              @click="exportVisible = true"
+            >导出数据</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-upload"
+              @click="uploadVisible=true"
+              class="title-button"
+            >导入数据</el-button></div></el-col>
+        <el-col :span="4">
+          <el-input v-model="text" placeholder="按姓名搜索"></el-input>
+          </el-col>
+        <el-col :span="2">
+          <el-button
+              type="primary"
+              icon="el-icon-search"
+              @click="searchUser"
+              class="title-button"
+            >搜索</el-button>
+          </el-col>
+      </el-row>
     </div>
     <div class="users-table">
       <el-table
@@ -123,6 +136,7 @@ export default {
   created() {
     this.projectId = this.$route.query.projectId;
     this.projectName = this.$route.query.projectName;
+    this.text = '';
     this.fetchData();
   },
   filters: {
@@ -147,7 +161,8 @@ export default {
       uploadVisible:false,
       groupVisible:false,
       userid:'',
-      username:''
+      username:'',
+      text:''
     };
   },
   methods: {
@@ -157,6 +172,8 @@ export default {
       let params =
         "projectId=" +
         this.projectId +
+        "&text=" +
+        this.text +
         "&pageIndex=" +
         this.pageInfo.pageIndex +
         "&pageSize=" +
@@ -177,7 +194,12 @@ export default {
       this.pageInfo.pageIndex = val - 1;
       this.fetchData();
     },
-
+    //搜索按钮
+    searchUser(){
+      this.pageInfo.pageIndex = 0;
+      this.pageInfo.pageSize = 20;
+      this.fetchData();
+    },
     //删除用户
     deleteUser(row) {
       let param = "projectId=" + this.projectId + "&userId=" + row.userId;

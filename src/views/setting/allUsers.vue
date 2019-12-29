@@ -1,25 +1,40 @@
 <template>
   <div class="users-container">
     <div class="users-title">
-      <span>用户列表&nbsp;&nbsp;</span>
-      <el-button
-        type="primary"
-        icon="el-icon-user-solid"
-        @click="dialogVisible=true"
-        class="title-button"
-      >添加管理员</el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-document-copy"
-        @click="exportVisible=true"
-        class="title-button"
-      >导出数据</el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-upload"
-        @click="uploadVisible=true"
-        class="title-button"
-      >导入数据</el-button>
+      <el-row :gutter="10">
+        <el-col :span="18">
+          <span>用户列表&nbsp;&nbsp;</span>
+          <el-button
+            type="primary"
+            icon="el-icon-user-solid"
+            @click="dialogVisible=true"
+            class="title-button"
+          >添加管理员</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-document-copy"
+            @click="exportVisible=true"
+            class="title-button"
+          >导出数据</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-upload"
+            @click="uploadVisible=true"
+            class="title-button"
+          >导入数据</el-button>
+      </el-col>
+      <el-col :span="4">
+          <el-input v-model="text" placeholder="按姓名搜索"></el-input>
+          </el-col>
+        <el-col :span="2">
+          <el-button
+              type="primary"
+              icon="el-icon-search"
+              @click="searchUser"
+              class="title-button"
+            >搜索</el-button>
+          </el-col>
+      </el-row>
     </div>
     <div class="users-table">
       <el-table
@@ -94,6 +109,7 @@ export default {
     uploadExcel
   },
   created() {
+    this.text = '';
     this.fetchData();
   },
   data() {
@@ -108,14 +124,17 @@ export default {
       tableHeight: window.innerHeight - 150,
       dialogVisible: false,
       exportVisible:false,
-      uploadVisible:false
+      uploadVisible:false,
+      text:''
     };
   },
   methods: {
     fetchData() {
       this.listLoading = true;
       let param =
-        "pageIndex=" +
+        "text=" +
+        this.text +
+        "&pageIndex=" +
         this.pageInfo.pageIndex +
         "&pageSize=" +
         this.pageInfo.pageSize;
@@ -133,6 +152,12 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageInfo.pageIndex = val - 1;
+      this.fetchData();
+    },
+    //搜索按钮
+    searchUser(){
+      this.pageInfo.pageIndex = 0;
+      this.pageInfo.pageSize = 20;
       this.fetchData();
     },
     //将用户提升至管理员
@@ -298,6 +323,7 @@ export default {
 .users {
   &-container {
     margin: 10px 30px;
+    width: 1070px;
   }
   &-title {
     font-size: 24px;
