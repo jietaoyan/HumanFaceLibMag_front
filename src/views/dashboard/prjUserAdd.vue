@@ -130,37 +130,48 @@ export default {
     //提交表单
     adminUpload(formName) {
       let that = this;
-      this.$refs[formName].validate(valid => {
+      that.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.imageUrl1) {
+          if (that.imageUrl1) {
             that.loading = true;
-            this.formData.append("projectId", this.projectId);
-            this.formData.append("userId", this.admin.formUserId);
-            this.formData.append("username", this.admin.name);
-            this.formData.append("userData", this.admin.userData);
+            that.formData.set("projectId", that.projectId);
+            that.formData.set("userId", that.admin.formUserId);
+            that.formData.set("username", that.admin.name);
+            that.formData.set("userData", that.admin.userData);
 
-            this.$refs.file.submit();
-            addUserFace(this.formData)
+            that.$refs.file.submit();
+            addUserFace(that.formData)
               .then(resp => {
-                this.formData = new FormData();
-                this.admin.name = '';
-                this.admin.userData = '';
-                this.admin.formUserId = '';
-                showMessage(this, "添加成功");
+                //全部置空
+                that.formData = new FormData();
+                that.admin.name = '';
+                that.admin.userData = '';
+                that.admin.formUserId = '';
+                that.$refs.file.clearFiles();
+                that.imageUrl1 = '';
+                // showMessage(that, "添加成功");
                 that.addSuccess = true;
-                that.visibled = false;
+                this.$confirm("添加成功，是否继续添加用户？", "提示", {
+                  confirmButtonText: "关闭",
+                  cancelButtonText: "继续",
+                  type: "warning",
+                  center: true
+                }).then(() => {
+                  that.visibled = false;
+                })
+                
               })
               .catch((e) => {
-                showMessage(this, "添加失败",'error');
+                showMessage(that, "添加失败",'error');
                 that.loading = false;
               });
             that.loading = false;
           } else {
-            showMessage(this, "请上传头像", "error");
+            showMessage(that, "请上传头像", "error");
             return false;
           }
         } else {
-          showMessage(this, "请检查输入格式", "error");
+          showMessage(that, "请检查输入格式", "error");
           return false;
         }
       });
@@ -170,20 +181,27 @@ export default {
       const isLt2M = file.size / 512 / 512 < 1;
       if (!isJPG) {
         showMessage(this, "上传头像图片只能是 JPG 格式!", "error");
+        this.$refs.file.clearFiles();
+        return false;
       }
       if (!isLt2M) {
         showMessage(this, "上传头像图片大小不能超过 300k!", "error");
+        this.$refs.file.clearFiles();
+        return false;
       }
       this.imageUrl1 = URL.createObjectURL(file.raw);
+      this.formData.set("file", file);
       return isJPG && isLt2M;
     },
     file1BeforUpload(file) {
-      this.formData.append("file", file);
+      this.formData.set("file", file);
       return false;
     },
     //重置表单内容
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.$refs.file.clearFiles();
+      this.imageUrl1 = '';
     }
   },
   computed: {
